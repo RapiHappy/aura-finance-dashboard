@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AreaChart, Area, Tooltip, ResponsiveContainer, Dot } from 'recharts';
+import { motion } from 'framer-motion';
 import { Sparkles, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle, Activity, Layers, CreditCard, PieChart, Settings } from 'lucide-react';
 import { DashboardData } from '@/lib/api';
 
@@ -19,25 +20,48 @@ export function SlimSidebar() {
   ];
 
   return (
-    <aside className="fixed left-6 top-1/2 -translate-y-1/2 w-16 py-6 glass-floating-dock rounded-3xl flex flex-col items-center gap-8 z-50">
-      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-black font-bold text-xl leading-none tracking-tighter mb-2 cursor-pointer hover:scale-105 spring-transition shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+    <motion.aside 
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6 md:top-1/2 md:-translate-y-1/2 w-[calc(100%-3rem)] sm:w-auto md:w-16 py-4 md:py-6 px-6 md:px-0 glass-floating-dock rounded-3xl flex flex-row md:flex-col items-center justify-between md:justify-start gap-2 sm:gap-4 md:gap-8 z-50"
+    >
+      <div className="hidden md:flex w-10 h-10 bg-white rounded-xl items-center justify-center text-black font-bold text-xl leading-none tracking-tighter mb-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
         A
       </div>
-      <div className="flex flex-col gap-4 w-full items-center text-zinc-500">
+      <div className="flex flex-row md:flex-col gap-2 sm:gap-4 md:w-full items-center text-zinc-500">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
           return (
-            <Link key={item.href} href={item.href} className={`w-10 h-10 flex items-center justify-center rounded-xl spring-transition cursor-pointer group relative ${isActive ? 'bg-white/10 text-white' : 'hover:bg-white/10 hover:text-white'}`}>
-              <Icon size={18} className="group-hover:scale-110 spring-transition" />
+            <Link key={item.href} href={item.href} className={`w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer group relative ${isActive ? 'text-white' : 'hover:text-white'}`}>
+              {isActive && (
+                <motion.div 
+                  layoutId="activeNav"
+                  className="absolute inset-0 bg-white/10 rounded-xl"
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="relative z-10">
+                <Icon size={18} />
+              </motion.div>
             </Link>
           );
         })}
       </div>
-      <div className="mt-auto w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 hover:text-zinc-300 spring-transition cursor-pointer text-zinc-500">
-        <Settings size={18} />
-      </div>
-    </aside>
+      <Link href="/settings" className={`md:mt-auto w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer relative group ${pathname === '/settings' ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'}`}>
+        {pathname === '/settings' && (
+          <motion.div 
+            layoutId="activeNav"
+            className="absolute inset-0 bg-white/10 rounded-xl"
+            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+          />
+        )}
+        <motion.div whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.95 }} className="relative z-10 transition-transform duration-300">
+          <Settings size={18} />
+        </motion.div>
+      </Link>
+    </motion.aside>
   );
 }
 
