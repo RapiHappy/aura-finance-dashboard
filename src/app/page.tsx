@@ -3,9 +3,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, CheckCircle2, CreditCard, PieChart, ShieldCheck, Activity, Layers, Globe } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, CreditCard, PieChart, ShieldCheck, Activity, Layers, Globe, ChevronDown } from 'lucide-react';
 
 export default function AuraFinanceLanding() {
+  const [lang, setLang] = React.useState('EN');
+  const [langOpen, setLangOpen] = React.useState(false);
+
   return (
     <div className="flex flex-col min-h-screen relative overflow-hidden">
       
@@ -31,6 +34,20 @@ export default function AuraFinanceLanding() {
           <Link href="#security" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Security</Link>
         </nav>
         <div className="flex items-center gap-4">
+          <div className="relative">
+            <button 
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center gap-1.5 text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5"
+            >
+              {lang} <ChevronDown size={14} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {langOpen && (
+              <div className="absolute top-full right-0 mt-2 w-24 bg-[#141414] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
+                <button onClick={() => { setLang('EN'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">EN - English</button>
+                <button onClick={() => { setLang('RU'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">RU - Русский</button>
+              </div>
+            )}
+          </div>
           <Link href="/login" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Sign In</Link>
           <Link href="/dashboard" className="btn-primary py-2.5 px-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
             Open Dashboard
@@ -92,12 +109,23 @@ export default function AuraFinanceLanding() {
           *No credit checks required for corporate cards. Instant setup.
         </motion.p>
 
+        {/* Hero Visual Mockup */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-5xl mt-16 relative perspective-1000"
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-20 pointer-events-none" />
+          <HeroMockup />
+        </motion.div>
+
         {/* Live Metrics Ticker */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-24 w-full max-w-4xl"
+          transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-16 w-full max-w-4xl z-30"
         >
           <p className="text-[10px] font-mono uppercase tracking-widest text-[#A1A1AA] mb-4 text-left">Real-Time System Metrics</p>
           <div className="flex gap-4 overflow-hidden relative w-full h-16 mask-image-linear-horizontal">
@@ -274,5 +302,55 @@ function LiveMetricsRow() {
         </div>
       ))}
     </motion.div>
+  );
+}
+
+function HeroMockup() {
+  return (
+    <div className="w-full aspect-[21/9] rounded-t-3xl border border-white/10 border-b-0 bg-[#0A0A0A] overflow-hidden relative shadow-[0_-20px_80px_rgba(99,102,241,0.15)] flex">
+      {/* Mockup Sidebar */}
+      <div className="w-48 h-full border-r border-white/5 bg-[#050505] p-4 flex flex-col gap-2">
+        <div className="w-24 h-4 rounded bg-white/10 mb-6" />
+        <div className="w-full h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30" />
+        <div className="w-full h-8 rounded-lg bg-white/5" />
+        <div className="w-full h-8 rounded-lg bg-white/5" />
+        <div className="w-full h-8 rounded-lg bg-white/5" />
+      </div>
+      
+      {/* Mockup Content */}
+      <div className="flex-1 p-8 flex flex-col gap-6 relative">
+        <div className="absolute top-[0] right-[10%] w-[300px] h-[300px] bg-purple-500/20 blur-[100px] rounded-full pointer-events-none z-0" />
+        
+        {/* Mockup Header */}
+        <div className="flex justify-between items-center z-10">
+          <div>
+            <div className="w-32 h-6 rounded bg-white/20 mb-2" />
+            <div className="w-48 h-3 rounded bg-white/10" />
+          </div>
+          <div className="flex gap-3">
+            <div className="w-24 h-8 rounded-lg bg-white/10" />
+            <div className="w-8 h-8 rounded-full bg-indigo-500/50" />
+          </div>
+        </div>
+
+        {/* Mockup Widgets */}
+        <div className="grid grid-cols-3 gap-4 z-10 mt-4">
+          <div className="col-span-2 h-48 rounded-2xl border border-white/10 bg-white/[0.02] p-4 flex flex-col justify-end">
+            <div className="flex items-end gap-2 h-24 w-full">
+              {[40, 70, 45, 90, 65, 80, 50, 100, 75, 60].map((h, i) => (
+                <div key={i} className="flex-1 rounded-t-sm bg-indigo-500/40 hover:bg-indigo-400 transition-colors" style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </div>
+          <div className="col-span-1 h-48 rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex flex-col gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 mb-2">
+              <Activity size={16} className="text-emerald-400" />
+            </div>
+            <div className="w-3/4 h-4 rounded bg-white/20" />
+            <div className="w-1/2 h-8 rounded bg-white/40 mt-auto" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
