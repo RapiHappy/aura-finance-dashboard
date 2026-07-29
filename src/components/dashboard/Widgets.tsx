@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AreaChart, Area, Tooltip, ResponsiveContainer, Dot } from 'recharts';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle, Activity, Layers, CreditCard, PieChart, Settings, LogIn, UserPlus } from 'lucide-react';
+import { Sparkles, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle, Activity, Layers, CreditCard, PieChart, Settings, LogIn, UserPlus, Globe } from 'lucide-react';
 import { DashboardData } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { useTranslation } from '@/lib/i18n';
 
 // --- Sidebar ---
 export function SlimSidebar() {
@@ -82,9 +83,20 @@ export function Badge({ children, variant = 'default' }: { children: React.React
 // --- Top Navigation ---
 export function TopNavigation() {
   const pathname = usePathname() || '/';
-  const pathClean = pathname.replace('/', '');
-  const pageName = pathname === '/' ? 'Overview' : pathClean.charAt(0).toUpperCase() + pathClean.slice(1);
   const { user, isAuthenticated } = useAuth();
+  const { t, lang, setLang } = useTranslation();
+
+  const getPageName = () => {
+    switch (pathname) {
+      case '/': return t.dashboard;
+      case '/dashboard': return t.dashboard;
+      case '/transactions': return t.transactions;
+      case '/cards': return t.cards;
+      case '/budgets': return t.budgets;
+      case '/settings': return t.settings;
+      default: return '';
+    }
+  };
 
   return (
     <header className="absolute top-0 left-0 w-full px-10 py-8 flex justify-between items-center z-50 pointer-events-none stagger-1">
@@ -95,11 +107,19 @@ export function TopNavigation() {
         <div className="flex items-center gap-2 text-sm font-medium tracking-tight">
           <span className="text-white">Aura OS</span>
           <span className="text-zinc-600">/</span>
-          <span className="text-zinc-500 hover:text-white cursor-pointer spring-transition">{pageName}</span>
+          <span className="text-zinc-500 hover:text-white cursor-pointer spring-transition">{getPageName()}</span>
         </div>
       </div>
       
       <div className="flex items-center gap-3 pointer-events-auto">
+        <button 
+          onClick={() => setLang(lang === 'EN' ? 'RU' : 'EN')}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all mr-2"
+        >
+          <Globe size={14} />
+          {lang}
+        </button>
+
         <div className="glass-panel flex p-1 rounded-lg">
           {['7D', '30D', '1Y'].map(period => (
             <button key={period} className={`px-4 py-1.5 rounded-md text-[11px] font-mono tracking-widest spring-transition ${period === '30D' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}>
@@ -116,11 +136,11 @@ export function TopNavigation() {
           <div className="flex items-center gap-2">
             <Link href="/login" className="px-3.5 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 text-xs font-medium text-white transition-all flex items-center gap-1.5">
               <LogIn size={14} />
-              <span>Sign In</span>
+              <span>{t.signIn}</span>
             </Link>
             <Link href="/register" className="px-3.5 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-xs font-medium text-white transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)] flex items-center gap-1.5">
               <UserPlus size={14} />
-              <span>Register</span>
+              <span>{t.register}</span>
             </Link>
           </div>
         )}
@@ -144,6 +164,8 @@ const CustomDot = (props: any) => {
 
 // --- Luminous Chart Hero ---
 export function LuminousChart({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full h-[65vh] min-h-[500px] relative">
       {/* Intense Center Glow */}
@@ -153,26 +175,26 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
       <div className="absolute top-40 left-10 z-20 flex gap-8">
         <div className="glass-panel-heavy p-8 rounded-3xl min-w-[320px] stagger-2 relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
-          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">Total Cash</p>
+          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">{t.totalCash}</p>
           <h2 className="text-6xl font-semibold tracking-tighter font-mono text-white mb-3">
             {isLoading ? <div className="h-14 w-48 bg-white/5 animate-pulse rounded-md" /> : data?.totalCash}
           </h2>
           <div className="flex items-center gap-1 text-[13px] text-emerald-400 font-medium">
             <ArrowUpRight size={14} />
             <span className="tracking-tight">{isLoading ? '...' : data?.cashChange?.split(' ')[1]}</span>
-            <span className="text-zinc-600 font-normal ml-1">vs last mo</span>
+            <span className="text-zinc-600 font-normal ml-1">{t.vsLastMo}</span>
           </div>
         </div>
 
         <div className="glass-panel p-8 rounded-3xl min-w-[280px] stagger-3">
-          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">Burn Rate</p>
+          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">{t.burnRate}</p>
           <h2 className="text-5xl font-semibold tracking-tighter font-mono text-white mb-3">
             {isLoading ? <div className="h-12 w-40 bg-white/5 animate-pulse rounded-md" /> : data?.burnRate?.split(' ')[0]}
           </h2>
           <div className="flex items-center gap-1 text-[13px] text-emerald-400 font-medium">
             <ArrowDownRight size={14} />
             <span className="tracking-tight">{isLoading ? '...' : data?.burnChange?.split(' ')[1]}</span>
-            <span className="text-zinc-600 font-normal ml-1">vs last mo</span>
+            <span className="text-zinc-600 font-normal ml-1">{t.vsLastMo}</span>
           </div>
         </div>
       </div>
@@ -183,9 +205,9 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
           <Sparkles size={14} className="text-indigo-400" />
         </div>
         <div>
-          <h4 className="text-[13px] font-medium text-white mb-1.5 tracking-tight">AI Summary</h4>
+          <h4 className="text-[13px] font-medium text-white mb-1.5 tracking-tight">{t.aiSummary}</h4>
           <p className="text-xs text-zinc-400 leading-relaxed tracking-wide">
-            {isLoading ? <span className="animate-pulse bg-white/10 text-transparent rounded">Loading insight analysis...</span> : "Burn decreased by 14% due to paused AWS servers. Runway extended to 18 months."}
+            {isLoading ? <span className="animate-pulse bg-white/10 text-transparent rounded">{t.loadingInsight}</span> : t.aiInsight}
           </p>
         </div>
       </div>
@@ -238,11 +260,12 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
 
 // --- Live Pulse Feed ---
 export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-3 hover:border-white/20 spring-transition hover:shadow-[0_8px_32px_rgba(99,102,241,0.15)]">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
       <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-8 flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /> Live Pulse
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /> {t.livePulse}
       </h3>
       <div className="flex flex-col gap-6">
         {isLoading ? (
@@ -278,10 +301,11 @@ export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null
 
 // --- Budget Progress ---
 export function BudgetProgress({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-4 hover:border-white/20 spring-transition hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
-      <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-8">Budget Status</h3>
+      <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-8">{t.budgetStatus}</h3>
       <div className="flex flex-col justify-center h-full gap-8 pb-4">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-8 w-full bg-white/[0.02] animate-pulse rounded-lg" />)
@@ -313,14 +337,15 @@ export function BudgetProgress({ data, isLoading }: { data?: DashboardData | nul
 
 // --- Smart Inbox ---
 export function SmartInbox({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-4 hover:border-white/20 spring-transition flex flex-col hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)]">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
       <div className="flex justify-between items-center mb-8 relative z-10">
         <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">
-          Action Inbox
+          {t.actionInbox}
         </h3>
-        {!isLoading && <Badge variant="brand">{data?.smartInbox.length} Req</Badge>}
+        {!isLoading && <Badge variant="brand">{data?.smartInbox.length} {t.req}</Badge>}
       </div>
       <div className="flex flex-col gap-3 flex-1">
         {isLoading ? (
@@ -338,7 +363,7 @@ export function SmartInbox({ data, isLoading }: { data?: DashboardData | null, i
               
               {/* Magnetic Buttons (reveal on hover via absolute position overlay to avoid layout shift) */}
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover/ticket:opacity-100 spring-transition flex items-center justify-center gap-2 px-4">
-                <button className="flex-1 bg-white text-black py-2 rounded-xl text-[11px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-1.5"><CheckCircle2 size={14}/> Approve</button>
+                <button className="flex-1 bg-white text-black py-2 rounded-xl text-[11px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-1.5"><CheckCircle2 size={14}/> {t.approve}</button>
                 <button className="px-4 py-2 bg-zinc-900 text-white rounded-xl text-[11px] font-medium hover:bg-zinc-800 hover:scale-[1.02] active:scale-95 spring-transition border border-white/5"><XCircle size={14}/></button>
               </div>
             </div>
