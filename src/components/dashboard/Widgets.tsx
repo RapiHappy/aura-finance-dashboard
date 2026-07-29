@@ -14,7 +14,7 @@ export function SlimSidebar() {
   const pathname = usePathname() || '/';
   
   const navItems = [
-    { href: '/', icon: Activity },
+    { href: '/dashboard', icon: Activity },
     { href: '/transactions', icon: Layers },
     { href: '/cards', icon: CreditCard },
     { href: '/budgets', icon: PieChart }
