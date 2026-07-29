@@ -339,28 +339,48 @@ export default function AuraFinanceLanding() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-panel p-8 rounded-3xl relative">
-              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
-              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t1}"</p>
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="w-10 h-10 rounded-full bg-zinc-800" />
-                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n1}</span>
+            {/* Testimonial 1 */}
+            <div className="glass-panel p-8 md:p-10 rounded-3xl relative group hover:-translate-y-2 transition-transform duration-500 flex flex-col">
+              <Quote size={40} className="text-indigo-500/20 mb-6" />
+              <p className="text-white text-base leading-relaxed mb-8 flex-1">"{t.testimonials.t1}"</p>
+              <div className="flex items-center gap-4 mt-auto pt-6 border-t border-white/5">
+                <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
+                  <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Sarah&backgroundColor=transparent" alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-white font-medium">{t.testimonials.n1.split(',')[0]}</span>
+                  <span className="text-xs text-indigo-400 font-medium">{t.testimonials.n1.split(',')[1] || "CFO at TechFlow"}</span>
+                </div>
               </div>
             </div>
-            <div className="glass-panel-heavy p-8 rounded-3xl relative border-indigo-500/30">
-              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
-              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t2}"</p>
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="w-10 h-10 rounded-full bg-zinc-800" />
-                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n2}</span>
+            
+            {/* Testimonial 2 */}
+            <div className="glass-panel-heavy p-8 md:p-10 rounded-3xl relative border-indigo-500/30 group hover:-translate-y-2 transition-transform duration-500 flex flex-col shadow-[0_0_30px_rgba(99,102,241,0.1)]">
+              <Quote size={40} className="text-indigo-500/30 mb-6" />
+              <p className="text-white text-base leading-relaxed mb-8 flex-1">"{t.testimonials.t2}"</p>
+              <div className="flex items-center gap-4 mt-auto pt-6 border-t border-white/5">
+                <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
+                  <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Marcus&backgroundColor=transparent" alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-white font-medium">{t.testimonials.n2.split(',')[0]}</span>
+                  <span className="text-xs text-emerald-400 font-medium">{t.testimonials.n2.split(',')[1] || "Founder of BuildOps"}</span>
+                </div>
               </div>
             </div>
-            <div className="glass-panel p-8 rounded-3xl relative">
-              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
-              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t3}"</p>
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="w-10 h-10 rounded-full bg-zinc-800" />
-                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n3}</span>
+            
+            {/* Testimonial 3 */}
+            <div className="glass-panel p-8 md:p-10 rounded-3xl relative group hover:-translate-y-2 transition-transform duration-500 flex flex-col">
+              <Quote size={40} className="text-indigo-500/20 mb-6" />
+              <p className="text-white text-base leading-relaxed mb-8 flex-1">"{t.testimonials.t3}"</p>
+              <div className="flex items-center gap-4 mt-auto pt-6 border-t border-white/5">
+                <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden shrink-0 border border-white/10">
+                  <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Elena&backgroundColor=transparent" alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm text-white font-medium">{t.testimonials.n3.split(',')[0]}</span>
+                  <span className="text-xs text-purple-400 font-medium">{t.testimonials.n3.split(',')[1] || "VP Ops"}</span>
+                </div>
               </div>
             </div>
           </div>
