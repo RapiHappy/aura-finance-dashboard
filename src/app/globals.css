@@ -63,6 +63,21 @@
       linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 32px 32px;
   }
+  
+  .bg-grid-aura {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .ambient-glow-blue {
+    @apply absolute w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0;
+  }
+  
+  .ambient-glow-purple {
+    @apply absolute w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none z-0;
+  }
 
   .bg-noise {
     background-image: url('https://grainy-gradients.vercel.app/noise.svg');

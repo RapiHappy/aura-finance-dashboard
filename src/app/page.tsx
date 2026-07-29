@@ -31,8 +31,8 @@ export default function AuraFinanceLanding() {
           <Link href="#faq" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">FAQ</Link>
         </nav>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Log In</Link>
-          <Link href="/app" className="btn-primary py-2.5 px-5">Launch App</Link>
+          <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Business Dashboard</Link>
+          <Link href="/app" className="btn-primary py-2.5 px-5">Launch Mini App</Link>
         </div>
       </header>
 
@@ -55,7 +55,7 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white max-w-5xl leading-[1.1] mb-6"
         >
-          Turn Your Screen Time Into <span className="text-gradient-primary">Digital Cash.</span>
+          The Unified Platform for <span className="text-gradient-primary">Business & Growth.</span>
         </motion.h1>
 
         <motion.p 
@@ -64,7 +64,7 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="text-lg md:text-xl text-[#A1A1AA] max-w-2xl mb-12 font-medium"
         >
-          The most advanced platform to earn crypto and fiat for simple micro-tasks. Seamless Telegram integration, fast payouts, zero fees.
+          Aura Finance bridges the gap. A powerful Desktop OS for businesses to manage finances and campaigns, and a viral Telegram Mini App for users to earn crypto.
         </motion.p>
 
         <motion.div 
@@ -73,11 +73,11 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col sm:flex-row items-center gap-4"
         >
-          <Link href="/app" className="btn-neon w-full sm:w-auto text-base px-8 py-4">
-            Start Earning Now <ArrowRight size={18} />
+          <Link href="/dashboard" className="btn-neon w-full sm:w-auto text-base px-8 py-4 !bg-white !text-black hover:!shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+            Open Desktop OS <ArrowRight size={18} />
           </Link>
-          <Link href="#advertisers" className="btn-secondary w-full sm:w-auto text-base px-8 py-4">
-            I am an Advertiser
+          <Link href="/app" className="btn-secondary w-full sm:w-auto text-base px-8 py-4">
+            Try Mobile App
           </Link>
         </motion.div>
         
@@ -148,7 +148,7 @@ export default function AuraFinanceLanding() {
               Need real users? <br />Launch a campaign in 3 minutes.
             </h2>
             <p className="text-[#A1A1AA] text-lg mb-8">
-              Aura Finance connects you with over 150,000 active users ready to test your product, leave reviews, and join your communities. Powered by our proprietary Anti-Fraud AI.
+              Manage your finances, runway, and ad campaigns all from our elite Desktop Dashboard. Aura Finance connects you with over 150,000 active users ready to test your product, powered by our proprietary Anti-Fraud AI.
             </p>
             <ul className="flex flex-col gap-4 mb-10">
               {['100% Real human traffic', 'Pay only for approved actions', 'Detailed analytics dashboard', 'API Access for automation'].map((item, i) => (
@@ -157,8 +157,8 @@ export default function AuraFinanceLanding() {
                 </li>
               ))}
             </ul>
-            <Link href="/register" className="btn-primary w-full sm:w-auto px-8 py-4 !bg-[#8A2BE2] !text-white hover:!shadow-[0_0_30px_rgba(138,43,226,0.4)]">
-              Create Advertiser Account
+            <Link href="/dashboard" className="btn-primary w-full sm:w-auto px-8 py-4 !bg-[#8A2BE2] !text-white hover:!shadow-[0_0_30px_rgba(138,43,226,0.4)]">
+              Open Desktop Dashboard
             </Link>
           </div>
           
