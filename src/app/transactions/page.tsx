@@ -5,12 +5,14 @@ import { api, LedgerTransaction } from '@/lib/api';
 import { SmartFilters } from '@/components/ledger/SmartFilters';
 import { TransactionTable } from '@/components/ledger/TransactionTable';
 import { SlideoverDetails } from '@/components/ledger/SlideoverDetails';
-import { SlimSidebar } from '@/components/dashboard/Widgets';
+import { SlimSidebar, TopNavigation } from '@/components/dashboard/Widgets';
+import { useTranslation } from '@/lib/i18n';
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTxn, setSelectedTxn] = useState<LedgerTransaction | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     api.getLedgerTransactions().then((data) => {
@@ -34,7 +36,10 @@ export default function TransactionsPage() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none mask-image-linear-top" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 60%)' }} />
 
-        <div className="max-w-[1800px] w-full mx-auto h-full flex flex-col relative z-10">
+        {/* Top Navigation */}
+        <TopNavigation />
+
+        <div className="max-w-[1800px] w-full mx-auto h-full flex flex-col relative z-10 pt-24">
           <SmartFilters />
           <TransactionTable 
             transactions={transactions} 

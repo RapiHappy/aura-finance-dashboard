@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, Bell, Shield, Paintbrush, ArrowLeft, Monitor, Lock, LogOut, Check, LogIn, UserPlus } from 'lucide-react';
+import { User, Bell, Shield, Paintbrush, ArrowLeft, Monitor, Lock, LogOut, Check, LogIn, UserPlus, Globe } from 'lucide-react';
 import { Badge } from '@/components/dashboard/Widgets';
 import { useAuth } from '@/lib/auth';
+import { useTranslation } from '@/lib/i18n';
 
 const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
@@ -18,6 +19,7 @@ const tabs = [
 export function SettingsUI() {
   const [activeTab, setActiveTab] = useState('profile');
   const { user, isAuthenticated, logout } = useAuth();
+  const { t, lang, setLang } = useTranslation();
   const router = useRouter();
 
   return (
@@ -37,12 +39,19 @@ export function SettingsUI() {
           <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500">
             <span>Aura OS</span>
             <span>/</span>
-            <span className="text-white">Settings</span>
+            <span className="text-white">{t.settings}</span>
           </div>
         </div>
 
         {/* User Auth Info & Logout Button */}
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setLang(lang === 'EN' ? 'RU' : 'EN')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all mr-2"
+          >
+            <Globe size={14} />
+            {lang}
+          </button>
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/40 border border-white/5">
@@ -96,7 +105,7 @@ export function SettingsUI() {
             animate={{ opacity: 1, x: 0 }}
             className="text-3xl font-medium tracking-tight text-white mb-6 px-1"
           >
-            Settings
+            {t.settings}
           </motion.h1>
           
           <nav className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0 hide-scrollbar">

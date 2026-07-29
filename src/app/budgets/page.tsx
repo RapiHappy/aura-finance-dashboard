@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { api, HeatmapDay, Anomaly, Budget } from '@/lib/api';
-import { SlimSidebar } from '@/components/dashboard/Widgets';
+import { SlimSidebar, TopNavigation } from '@/components/dashboard/Widgets';
 import { DepartmentCard, SpendHeatmap, AnomalyFeed } from '@/components/budgets/BudgetWidgets';
 import { Settings2 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 export default function BudgetsPage() {
   const [data, setData] = useState<{ heatmap: HeatmapDay[], anomalies: Anomaly[], departments: Budget[] } | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     api.getBudgetAnalytics().then(setData);
@@ -26,11 +28,14 @@ export default function BudgetsPage() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none mask-image-linear-top" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 60%)' }} />
 
-        <div className="max-w-[1800px] w-full mx-auto h-full flex flex-col gap-8 relative z-10">
+        {/* Top Navigation */}
+        <TopNavigation />
+
+        <div className="max-w-[1800px] w-full mx-auto h-full flex flex-col gap-8 relative z-10 pt-24">
           
           <header className="flex justify-between items-end shrink-0 stagger-1">
             <div>
-              <h1 className="text-3xl font-medium tracking-tight text-white mb-2">Budgets & Control</h1>
+              <h1 className="text-3xl font-medium tracking-tight text-white mb-2">{t.budgets}</h1>
               <div className="flex gap-4">
                 <span className="text-[13px] text-zinc-400">Total Budget: <span className="text-white font-mono tracking-tighter">$270,000</span></span>
                 <span className="text-[13px] text-zinc-600">/</span>

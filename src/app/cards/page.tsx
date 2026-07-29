@@ -2,15 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { api, CorporateCard } from '@/lib/api';
-import { SlimSidebar } from '@/components/dashboard/Widgets';
+import { SlimSidebar, TopNavigation } from '@/components/dashboard/Widgets';
 import { VirtualCard } from '@/components/cards/VirtualCard';
 import { CardSettings, CardTransactions } from '@/components/cards/CardDetails';
 import { Plus } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 export default function CardsPage() {
   const [cards, setCards] = useState<CorporateCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     api.getCorporateCards().then((data) => {
@@ -38,17 +40,18 @@ export default function CardsPage() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none mask-image-linear-top" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 40%)' }} />
 
         {/* Top Header */}
-        <header className="px-10 py-10 flex justify-between items-end relative z-10 shrink-0 stagger-1">
+        <TopNavigation />
+        <header className="px-10 py-10 pt-24 flex justify-between items-end relative z-10 shrink-0 stagger-1">
           <div>
-            <h1 className="text-3xl font-medium tracking-tight text-white mb-2">Corporate Cards</h1>
+            <h1 className="text-3xl font-medium tracking-tight text-white mb-2">{t.cards}</h1>
             <div className="flex gap-4">
-              <span className="text-[13px] text-zinc-400"><span className="text-white font-medium">{cards.filter(c => c.status === 'Active').length}</span> Active</span>
+              <span className="text-[13px] text-zinc-400"><span className="text-white font-medium">{cards.filter(c => c.status === 'Active').length}</span> {t.active}</span>
               <span className="text-[13px] text-zinc-600">/</span>
-              <span className="text-[13px] text-zinc-400"><span className="text-zinc-500 font-medium">{cards.filter(c => c.status === 'Frozen').length}</span> Frozen</span>
+              <span className="text-[13px] text-zinc-400"><span className="text-zinc-500 font-medium">{cards.filter(c => c.status === 'Frozen').length}</span> {t.frozen}</span>
             </div>
           </div>
           <button className="px-5 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-            <Plus size={16} /> Issue New Card
+            <Plus size={16} /> {t.issueNewCard}
           </button>
         </header>
 
@@ -77,7 +80,7 @@ export default function CardsPage() {
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 spring-transition">
                   <Plus size={20} />
                 </div>
-                <span className="text-[13px] font-medium tracking-tight">Issue Virtual Card</span>
+                <span className="text-[13px] font-medium tracking-tight">{t.issueVirtualCard}</span>
               </div>
             )}
           </div>
