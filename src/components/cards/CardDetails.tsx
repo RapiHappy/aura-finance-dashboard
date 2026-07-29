@@ -1,16 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { CorporateCard } from '@/lib/api';
-import { Settings2, Snowflake, Play, CreditCard, Activity, Copy, ArrowUpRight } from 'lucide-react';
+import { Settings2, Snowflake, Play, CreditCard, Activity, Copy, ArrowUpRight, Loader2 } from 'lucide-react';
 import { Badge } from '../dashboard/Widgets';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function CardSettings({ card }: { card: CorporateCard }) {
   const [isRevealed, setIsRevealed] = useState(false);
   const [isFrozen, setIsFrozen] = useState(card.status !== 'Active');
+  
+  // Premium loading states
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [isFreezing, setIsFreezing] = useState(false);
 
   useEffect(() => {
     setIsFrozen(card.status !== 'Active');
     setIsRevealed(false);
+    setIsRevealing(false);
+    setIsFreezing(false);
   }, [card.id, card.status]);
+
+  const handleReveal = () => {
+    if (!isRevealed) {
+      setIsRevealing(true);
+      setTimeout(() => {
+        setIsRevealing(false);
+        setIsRevealed(true);
+      }, 600);
+    } else {
+      setIsRevealed(false);
+    }
+  };
+
+  const handleFreezeToggle = (freeze: boolean) => {
+    setIsFreezing(true);
+    setTimeout(() => {
+      setIsFreezing(false);
+      setIsFrozen(freeze);
+    }, 600);
+  };
 
   const pct = Math.min((card.spent / card.limit) * 100, 100);
   const isNearLimit = pct > 80;
@@ -62,13 +89,23 @@ export function CardSettings({ card }: { card: CorporateCard }) {
         <div className="flex justify-between items-center py-3 border-b border-white/[0.02]">
           <span className="text-[13px] text-zinc-400">Card Number</span>
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => {
-            navigator.clipboard.writeText(`4111 2222 3333 ${card.last4}`);
-            alert('Card number copied to clipboard!');
+            if (isRevealed) {
+              navigator.clipboard.writeText(`4111 2222 3333 ${card.last4}`);
+              alert('Card number copied to clipboard!');
+            }
           }}>
-            <span className="text-[13px] font-mono text-white tracking-widest">
-              {isRevealed ? `4111 2222 3333 ${card.last4}` : `•••• •••• •••• ${card.last4}`}
+            <span className="text-[13px] font-mono text-white tracking-widest flex items-center gap-2">
+              {isRevealing ? (
+                <span className="flex items-center gap-2 text-indigo-400">
+                  <Loader2 size={14} className="animate-spin" /> Decrypting...
+                </span>
+              ) : isRevealed ? (
+                `4111 2222 3333 ${card.last4}`
+              ) : (
+                `•••• •••• •••• ${card.last4}`
+              )}
             </span>
-            <Copy size={12} className="text-zinc-600 group-hover:text-white spring-transition" />
+            {isRevealed && <Copy size={12} className="text-zinc-600 group-hover:text-white spring-transition" />}
           </div>
         </div>
 
@@ -80,27 +117,39 @@ export function CardSettings({ card }: { card: CorporateCard }) {
 
       {/* Actions */}
       <div className="flex gap-3 mt-8">
-        <button 
-          onClick={() => setIsRevealed(!isRevealed)}
-          className="flex-1 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleReveal}
+          disabled={isRevealing}
+          className="flex-1 py-3 bg-white text-black rounded-xl text-[13px] font-medium transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)] disabled:opacity-80"
         >
-          <CreditCard size={16} /> {isRevealed ? 'Hide Details' : 'Reveal Details'}
-        </button>
+          {isRevealing ? <Loader2 size={16} className="animate-spin" /> : <CreditCard size={16} />} 
+          {isRevealing ? 'Decrypting...' : isRevealed ? 'Hide Details' : 'Reveal Details'}
+        </motion.button>
         
         {currentStatus === 'Active' ? (
-          <button 
-            onClick={() => setIsFrozen(true)}
-            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-amber-500/10 hover:text-amber-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-amber-500/20"
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleFreezeToggle(true)}
+            disabled={isFreezing}
+            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-amber-500/10 hover:text-amber-400 transition-colors flex items-center justify-center gap-2 border border-white/5 hover:border-amber-500/20 disabled:opacity-80"
           >
-            <Snowflake size={16} /> Freeze
-          </button>
+            {isFreezing ? <Loader2 size={16} className="animate-spin text-amber-400" /> : <Snowflake size={16} />} 
+            {isFreezing ? 'Freezing...' : 'Freeze'}
+          </motion.button>
         ) : (
-          <button 
-            onClick={() => setIsFrozen(false)}
-            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-emerald-500/10 hover:text-emerald-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-emerald-500/20"
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleFreezeToggle(false)}
+            disabled={isFreezing}
+            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors flex items-center justify-center gap-2 border border-white/5 hover:border-emerald-500/20 disabled:opacity-80"
           >
-            <Play size={16} /> Unfreeze
-          </button>
+            {isFreezing ? <Loader2 size={16} className="animate-spin text-emerald-400" /> : <Play size={16} />} 
+            {isFreezing ? 'Unfreezing...' : 'Unfreeze'}
+          </motion.button>
         )}
       </div>
     </div>
