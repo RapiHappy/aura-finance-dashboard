@@ -1,47 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  --color-aura-bg: #050505;
-  --color-aura-panel: #111111;
-  --color-aura-border: #1E1E1E;
-  --color-aura-text: #F4F4F5;
-  --color-aura-muted: #A1A1AA;
-  --color-aura-indigo: #6366F1;
-  --color-aura-emerald: #10B981;
+  --color-rc-bg: #0A0A0A;
+  --color-rc-panel: #141414;
+  --color-rc-border: #2A2A2A;
+  --color-rc-text: #EDEDED;
+  --color-rc-muted: #A1A1AA;
+  --color-rc-cyan: #00E5FF;
+  --color-rc-purple: #8A2BE2;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 2%;
-    --foreground: 240 5% 96%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 93%;
   }
 
   body {
-    background-color: var(--color-aura-bg);
-    color: var(--color-aura-text);
+    background-color: var(--color-rc-bg);
+    color: var(--color-rc-text);
   }
 }
 
-/* Elite Aura Finance Utilities */
+/* ReviewCash Premium Utilities */
 @layer utilities {
   .glass-panel {
-    @apply bg-[#111111]/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)];
+    @apply bg-black/40 backdrop-blur-xl border border-white/10;
   }
   
   .glass-panel-heavy {
-    @apply bg-[#0A0A0A]/80 backdrop-blur-3xl border border-white/[0.15] shadow-[0_16px_48px_rgba(0,0,0,0.6)];
+    @apply bg-[#141414]/80 backdrop-blur-2xl border border-[#2A2A2A];
   }
 
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A2BE2] to-[#00E5FF];
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-lg bg-white text-black font-semibold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2;
+    @apply px-6 py-3 rounded-xl bg-white text-black font-semibold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2;
+  }
+
+  .btn-neon {
+    @apply px-6 py-3 rounded-xl bg-[#00E5FF] text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,229,255,0.4)] flex items-center justify-center gap-2 hover:shadow-[0_0_50px_rgba(0,229,255,0.6)];
   }
 
   .btn-secondary {
-    @apply px-4 py-2 rounded-lg bg-transparent border border-white/10 text-white font-medium text-sm hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2;
+    @apply px-6 py-3 rounded-xl bg-transparent border border-white/10 text-white font-medium text-sm hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2;
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -52,25 +56,18 @@
     scrollbar-width: none;
   }
 
-  .ambient-glow-blue {
-    @apply absolute w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0;
-  }
-  
-  .ambient-glow-purple {
-    @apply absolute w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none z-0;
+  /* Custom Grid Background for depth */
+  .bg-grid-rc {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 
   .bg-noise {
     background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-    opacity: 0.15;
+    opacity: 0.25;
     mix-blend-mode: overlay;
     pointer-events: none;
-  }
-  
-  .bg-grid-aura {
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 32px 32px;
   }
 }
