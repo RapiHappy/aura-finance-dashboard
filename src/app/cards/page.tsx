@@ -5,14 +5,17 @@ import { api, CorporateCard } from '@/lib/api';
 import { SlimSidebar, TopNavigation } from '@/components/dashboard/Widgets';
 import { VirtualCard } from '@/components/cards/VirtualCard';
 import { CardSettings, CardTransactions } from '@/components/cards/CardDetails';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CardsPage() {
   const [cards, setCards] = useState<CorporateCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [cardType, setCardType] = useState('virtual');
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -113,12 +116,42 @@ export default function CardsPage() {
             <div className="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl flex flex-col gap-6">
               <h2 className="text-xl font-medium tracking-tight">Issue New Card</h2>
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 relative">
                   <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Card Type</label>
-                  <select className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm">
-                    <option value="virtual">Virtual Card</option>
-                    <option value="physical">Physical Card</option>
-                  </select>
+                  
+                  {/* Custom Dropdown */}
+                  <div 
+                    onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+                    className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm cursor-pointer flex justify-between items-center hover:bg-white/10 transition-colors"
+                  >
+                    <span>{cardType === 'virtual' ? 'Virtual Card' : 'Physical Card'}</span>
+                    <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${isTypeDropdownOpen ? 'rotate-180' : ''}`} />
+                  </div>
+
+                  <AnimatePresence>
+                    {isTypeDropdownOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute top-full left-0 right-0 mt-2 bg-[#111] border border-white/10 rounded-xl overflow-hidden z-50 shadow-2xl"
+                      >
+                        <div 
+                          onClick={() => { setCardType('virtual'); setIsTypeDropdownOpen(false); }}
+                          className={`px-4 py-3 text-sm cursor-pointer hover:bg-white/5 transition-colors ${cardType === 'virtual' ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-white'}`}
+                        >
+                          Virtual Card
+                        </div>
+                        <div 
+                          onClick={() => { setCardType('physical'); setIsTypeDropdownOpen(false); }}
+                          className={`px-4 py-3 text-sm cursor-pointer hover:bg-white/5 transition-colors ${cardType === 'physical' ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-white'}`}
+                        >
+                          Physical Card
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Monthly Limit</label>
