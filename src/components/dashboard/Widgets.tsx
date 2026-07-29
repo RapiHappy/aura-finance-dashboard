@@ -25,7 +25,7 @@ export function SlimSidebar() {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6 md:top-1/2 md:-translate-y-1/2 w-[calc(100%-3rem)] sm:w-auto md:w-16 py-4 md:py-6 px-6 md:px-0 glass-floating-dock rounded-3xl flex flex-row md:flex-col items-center justify-between md:justify-start gap-2 sm:gap-4 md:gap-8 z-50"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-6 md:top-1/2 md:-translate-y-1/2 w-[calc(100%-3rem)] sm:w-auto md:w-16 py-4 md:py-6 px-6 md:px-0 glass-panel-heavy rounded-3xl flex flex-row md:flex-col items-center justify-between md:justify-start gap-2 sm:gap-4 md:gap-8 z-50"
     >
       <div className="hidden md:flex w-10 h-10 bg-white rounded-xl items-center justify-center text-black font-bold text-xl leading-none tracking-tighter mb-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
         A
@@ -239,8 +239,8 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
 // --- Live Pulse Feed ---
 export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
   return (
-    <div className="col-span-12 md:col-span-4 p-8 border border-white/[0.03] rounded-3xl bg-[#030303] relative overflow-hidden group stagger-3 hover:border-white/[0.08] spring-transition">
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
+    <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-3 hover:border-white/20 spring-transition hover:shadow-[0_8px_32px_rgba(99,102,241,0.15)]">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
       <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-8 flex items-center gap-2">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /> Live Pulse
       </h3>
@@ -279,7 +279,8 @@ export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null
 // --- Budget Progress ---
 export function BudgetProgress({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
   return (
-    <div className="col-span-12 md:col-span-4 p-8 border border-white/[0.03] rounded-3xl bg-[#030303] group stagger-4 hover:border-white/[0.08] spring-transition">
+    <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-4 hover:border-white/20 spring-transition hover:shadow-[0_8px_32px_rgba(16,185,129,0.1)]">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
       <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-8">Budget Status</h3>
       <div className="flex flex-col justify-center h-full gap-8 pb-4">
         {isLoading ? (
@@ -313,8 +314,9 @@ export function BudgetProgress({ data, isLoading }: { data?: DashboardData | nul
 // --- Smart Inbox ---
 export function SmartInbox({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
   return (
-    <div className="col-span-12 md:col-span-4 p-8 border border-white/[0.03] rounded-3xl bg-[#030303] group stagger-4 hover:border-white/[0.08] spring-transition flex flex-col">
-      <div className="flex justify-between items-center mb-8">
+    <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-4 hover:border-white/20 spring-transition flex flex-col hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)]">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
+      <div className="flex justify-between items-center mb-8 relative z-10">
         <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">
           Action Inbox
         </h3>

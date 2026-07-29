@@ -68,10 +68,10 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
         </Link>
 
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00E5FF] to-[#8A2BE2] flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-            <Sparkles size={16} className="text-black" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+            <Sparkles size={16} className="text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-white">ReviewCash</span>
+          <span className="font-bold text-xl tracking-tight text-white">Aura Finance</span>
         </div>
       </header>
 
@@ -135,13 +135,16 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
           <div className="mb-6">
             <button 
               type="button"
-              onClick={() => { login('telegram.user@reviewcash.app', 'TG User'); router.push('/app'); }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#2AABEE]/10 border border-[#2AABEE]/20 rounded-xl hover:bg-[#2AABEE]/20 text-sm font-bold text-[#2AABEE] transition-all active:scale-95 group"
+              onClick={() => { login('founder@aurafinance.app', 'Founder'); router.push('/'); }}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/[0.03] border border-white/10 rounded-xl hover:bg-white/[0.08] text-sm font-medium text-white transition-all active:scale-95 group"
             >
               <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.97-.64-.34-.99.22-1.58.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/>
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.1 9 5 12 5z"/>
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 10.8 0 12.35s.7 2.65 1.9 5.05l3.7-2.6z"/>
+                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.1-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
               </svg>
-              <span>Login with Telegram</span>
+              <span>Continue with Google</span>
             </button>
           </div>
 
@@ -224,7 +227,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-4 btn-neon w-full group disabled:opacity-50"
+              className="mt-4 w-full py-3.5 px-6 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-medium text-xs rounded-xl shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -254,7 +257,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
 
       {/* Footer */}
       <footer className="z-20 text-center text-xs text-zinc-600 font-mono">
-        &copy; {new Date().getFullYear()} ReviewCash. Protected by Anti-Fraud AI.
+        &copy; {new Date().getFullYear()} Aura Financial OS. Secure & SOC-2 Certified.
       </footer>
     </div>
   );
