@@ -2,8 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Bell, Shield, Paintbrush, ChevronRight, Key, Monitor, Lock, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { User, Bell, Shield, Paintbrush, ArrowLeft, Monitor, Lock, LogOut, Check, LogIn, UserPlus } from 'lucide-react';
 import { Badge } from '@/components/dashboard/Widgets';
+import { useAuth } from '@/lib/auth';
 
 const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
@@ -14,60 +17,129 @@ const tabs = [
 
 export function SettingsUI() {
   const [activeTab, setActiveTab] = useState('profile');
+  const { user, isAuthenticated, logout } = useAuth();
+  const router = useRouter();
 
   return (
-    <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8 lg:gap-12 pb-20 md:pb-0">
+    <div className="max-w-6xl mx-auto w-full flex flex-col gap-8 pb-20 md:pb-0 z-10 relative">
       
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 shrink-0">
-        <motion.h1 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-3xl font-medium tracking-tight text-white mb-8 px-2"
-        >
-          Settings
-        </motion.h1>
-        
-        <nav className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0 hide-scrollbar">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            
-            return (
+      {/* Top Header Navigation Bar with Back Button */}
+      <header className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <div className="flex items-center gap-4">
+          <Link
+            href="/"
+            className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:bg-white/10 text-xs font-medium text-zinc-300 hover:text-white transition-all active:scale-95 shadow-sm"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-indigo-400" />
+            <span>Back to Dashboard</span>
+          </Link>
+
+          <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500">
+            <span>Aura OS</span>
+            <span>/</span>
+            <span className="text-white">Settings</span>
+          </div>
+        </div>
+
+        {/* User Auth Info & Logout Button */}
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/40 border border-white/5">
+                <img 
+                  src={user?.avatar || "https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=transparent"} 
+                  alt={user?.name || "User"} 
+                  className="w-6 h-6 rounded-full bg-zinc-800"
+                />
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-medium text-white leading-tight">{user?.name}</span>
+                  <span className="text-[10px] text-zinc-500 leading-tight">{user?.email}</span>
+                </div>
+              </div>
+
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 whitespace-nowrap md:whitespace-normal group ${
-                  isActive ? 'text-white' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
-                }`}
+                onClick={() => { logout(); router.push('/login'); }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 text-xs font-medium transition-all active:scale-95"
               >
-                {isActive && (
-                  <motion.div 
-                    layoutId="activeTabIndicator"
-                    className="absolute inset-0 bg-white/10 rounded-2xl border border-white/10"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-                <Icon size={18} className="relative z-10" />
-                <span className="relative z-10 text-[13px] font-medium tracking-wide">{tab.label}</span>
+                <LogOut size={14} />
+                <span className="hidden sm:inline">Sign Out</span>
               </button>
-            );
-          })}
-        </nav>
-      </aside>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 text-white text-xs font-medium transition-all"
+              >
+                <LogIn size={14} />
+                <span>Sign In</span>
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-medium transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+              >
+                <UserPlus size={14} />
+                <span>Register</span>
+              </Link>
+            </div>
+          )}
+        </div>
+      </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 glass-panel-heavy rounded-3xl p-6 md:p-10 relative overflow-hidden">
-        {/* Glow Effect */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+      {/* Settings Grid */}
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
+        
+        {/* Left Settings Sidebar Navigation */}
+        <aside className="w-full md:w-64 shrink-0">
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-3xl font-medium tracking-tight text-white mb-6 px-1"
+          >
+            Settings
+          </motion.h1>
+          
+          <nav className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0 hide-scrollbar">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 whitespace-nowrap md:whitespace-normal group ${
+                    isActive ? 'text-white font-medium' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeTabIndicator"
+                      className="absolute inset-0 bg-white/10 rounded-2xl border border-white/10"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <Icon size={18} className="relative z-10" />
+                  <span className="relative z-10 text-[13px] tracking-wide">{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
 
-        <AnimatePresence mode="wait">
-          {activeTab === 'profile' && <ProfileSettings key="profile" />}
-          {activeTab === 'preferences' && <PreferencesSettings key="preferences" />}
-          {activeTab === 'notifications' && <NotificationsSettings key="notifications" />}
-          {activeTab === 'security' && <SecuritySettings key="security" />}
-        </AnimatePresence>
-      </main>
+        {/* Main Settings Card */}
+        <main className="flex-1 min-w-0 glass-panel-heavy rounded-3xl p-6 md:p-10 relative overflow-hidden">
+          {/* Glow Effect */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+
+          <AnimatePresence mode="wait">
+            {activeTab === 'profile' && <ProfileSettings key="profile" />}
+            {activeTab === 'preferences' && <PreferencesSettings key="preferences" />}
+            {activeTab === 'notifications' && <NotificationsSettings key="notifications" />}
+            {activeTab === 'security' && <SecuritySettings key="security" />}
+          </AnimatePresence>
+        </main>
+      </div>
     </div>
   );
 }
@@ -75,8 +147,22 @@ export function SettingsUI() {
 // --- TAB COMPONENTS ---
 
 function ProfileSettings() {
+  const { user, login } = useAuth();
+  const [firstName, setFirstName] = useState(user?.name ? user.name.split(' ')[0] : 'Alex');
+  const [lastName, setLastName] = useState(user?.name && user.name.split(' ').length > 1 ? user.name.split(' ').slice(1).join(' ') : 'Smith');
+  const [email, setEmail] = useState(user?.email || 'alex.smith@aura.fi');
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    login(email, `${firstName} ${lastName}`);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+
   return (
-    <motion.div
+    <motion.form
+      onSubmit={handleSave}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -85,41 +171,70 @@ function ProfileSettings() {
     >
       <div>
         <h2 className="text-xl font-medium text-white mb-2 tracking-tight">Public Profile</h2>
-        <p className="text-sm text-zinc-500">This information will be displayed publicly so be careful what you share.</p>
+        <p className="text-sm text-zinc-500">This information will be displayed publicly across your organization workspace.</p>
       </div>
 
       <div className="flex items-center gap-6">
-        <div className="w-24 h-24 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden relative group">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=transparent" alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+        <div className="w-24 h-24 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden relative group shrink-0">
+          <img 
+            src={user?.avatar || "https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=transparent"} 
+            alt="Avatar" 
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+          />
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
             <span className="text-xs font-medium text-white">Change</span>
           </div>
         </div>
-        <div className="flex gap-3">
-          <button className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-xl hover:scale-105 active:scale-95 transition-all">Upload New</button>
-          <button className="px-5 py-2.5 bg-transparent border border-white/10 text-white text-xs font-medium rounded-xl hover:bg-white/5 transition-all">Remove</button>
+        <div className="flex flex-wrap gap-3">
+          <button type="button" className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-xl hover:scale-105 active:scale-95 transition-all">Upload New</button>
+          <button type="button" className="px-5 py-2.5 bg-transparent border border-white/10 text-white text-xs font-medium rounded-xl hover:bg-white/5 transition-all">Remove</button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
           <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">First Name</label>
-          <input type="text" defaultValue="Alex" className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" />
+          <input 
+            type="text" 
+            value={firstName} 
+            onChange={(e) => setFirstName(e.target.value)}
+            className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" 
+          />
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">Last Name</label>
-          <input type="text" defaultValue="Smith" className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" />
+          <input 
+            type="text" 
+            value={lastName} 
+            onChange={(e) => setLastName(e.target.value)}
+            className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" 
+          />
         </div>
         <div className="flex flex-col gap-2 md:col-span-2">
           <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">Email Address</label>
-          <input type="email" defaultValue="alex.smith@aura.fi" className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" />
+          <input 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors" 
+          />
         </div>
       </div>
 
-      <div className="pt-6 border-t border-white/5 flex justify-end">
-        <button className="px-6 py-3 bg-indigo-500 text-white text-xs font-medium rounded-xl hover:bg-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] active:scale-95 transition-all">Save Changes</button>
+      <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+        {saved ? (
+          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+            <Check size={16} /> Changes saved successfully!
+          </span>
+        ) : <span />}
+        <button 
+          type="submit" 
+          className="px-6 py-3 bg-indigo-500 text-white text-xs font-medium rounded-xl hover:bg-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] active:scale-95 transition-all"
+        >
+          Save Changes
+        </button>
       </div>
-    </motion.div>
+    </motion.form>
   );
 }
 
@@ -147,7 +262,7 @@ function PreferencesSettings() {
             </div>
           </div>
           <select className="bg-black border border-white/10 text-xs text-white px-4 py-2 rounded-lg outline-none">
-            <option>Dark Mode</option>
+            <option>Dark Mode (Default)</option>
             <option>Light Mode</option>
             <option>System Default</option>
           </select>
@@ -217,6 +332,9 @@ function NotificationsSettings() {
 }
 
 function SecuritySettings() {
+  const { logout } = useAuth();
+  const router = useRouter();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -250,15 +368,18 @@ function SecuritySettings() {
           </div>
           <Badge variant="success">Current</Badge>
         </div>
-        <div className="p-4 border border-white/5 rounded-2xl bg-black flex items-center justify-between group cursor-pointer hover:border-white/10 transition-colors">
+        <div 
+          onClick={() => { logout(); router.push('/login'); }}
+          className="p-4 border border-white/5 rounded-2xl bg-black flex items-center justify-between group cursor-pointer hover:border-red-500/30 transition-colors"
+        >
           <div className="flex items-center gap-4">
-            <Monitor size={20} className="text-zinc-600" />
+            <LogOut size={20} className="text-red-400 group-hover:scale-110 transition-transform" />
             <div>
-              <p className="text-sm font-medium text-white">iPhone 15 Pro</p>
-              <p className="text-xs text-zinc-500">San Francisco, CA • 2 hours ago</p>
+              <p className="text-sm font-medium text-white">Log Out All Sessions</p>
+              <p className="text-xs text-zinc-500">Sign out of your account on all devices</p>
             </div>
           </div>
-          <LogOut size={16} className="text-zinc-600 group-hover:text-red-400 transition-colors" />
+          <Badge variant="critical">Sign Out</Badge>
         </div>
       </div>
     </motion.div>

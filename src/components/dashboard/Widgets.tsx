@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AreaChart, Area, Tooltip, ResponsiveContainer, Dot } from 'recharts';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle, Activity, Layers, CreditCard, PieChart, Settings } from 'lucide-react';
+import { Sparkles, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle, Activity, Layers, CreditCard, PieChart, Settings, LogIn, UserPlus } from 'lucide-react';
 import { DashboardData } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 
 // --- Sidebar ---
 export function SlimSidebar() {
@@ -83,13 +84,14 @@ export function TopNavigation() {
   const pathname = usePathname() || '/';
   const pathClean = pathname.replace('/', '');
   const pageName = pathname === '/' ? 'Overview' : pathClean.charAt(0).toUpperCase() + pathClean.slice(1);
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header className="absolute top-0 left-0 w-full px-10 py-8 flex justify-between items-center z-50 pointer-events-none stagger-1">
       <div className="flex items-center gap-4 pointer-events-auto">
-        <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
+        <Link href="/" className="w-8 h-8 bg-white rounded flex items-center justify-center hover:scale-105 transition-transform">
           <span className="text-black font-bold text-lg leading-none tracking-tighter">A</span>
-        </div>
+        </Link>
         <div className="flex items-center gap-2 text-sm font-medium tracking-tight">
           <span className="text-white">Aura OS</span>
           <span className="text-zinc-600">/</span>
@@ -105,9 +107,23 @@ export function TopNavigation() {
             </button>
           ))}
         </div>
-        <div className="w-9 h-9 rounded-full bg-zinc-900 border border-white/5 cursor-pointer overflow-hidden flex items-center justify-center hover:scale-105 hover:border-white/20 spring-transition">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=transparent" alt="User" className="w-full h-full object-cover" />
-        </div>
+
+        {isAuthenticated ? (
+          <Link href="/settings" className="w-9 h-9 rounded-full bg-zinc-900 border border-white/10 cursor-pointer overflow-hidden flex items-center justify-center hover:scale-105 hover:border-white/40 spring-transition shadow-sm">
+            <img src={user?.avatar || "https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=transparent"} alt={user?.name || "User"} className="w-full h-full object-cover" />
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Link href="/login" className="px-3.5 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 text-xs font-medium text-white transition-all flex items-center gap-1.5">
+              <LogIn size={14} />
+              <span>Sign In</span>
+            </Link>
+            <Link href="/register" className="px-3.5 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-xs font-medium text-white transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)] flex items-center gap-1.5">
+              <UserPlus size={14} />
+              <span>Register</span>
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );
