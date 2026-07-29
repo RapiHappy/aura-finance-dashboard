@@ -1,99 +1,73 @@
 @import "tailwindcss";
 
+@theme {
+  --color-rc-bg: #0A0A0A;
+  --color-rc-panel: #141414;
+  --color-rc-border: #2A2A2A;
+  --color-rc-text: #EDEDED;
+  --color-rc-muted: #A1A1AA;
+  --color-rc-cyan: #00E5FF;
+  --color-rc-purple: #8A2BE2;
+}
+
 @layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 93%;
+  }
+
+  body {
+    background-color: var(--color-rc-bg);
+    color: var(--color-rc-text);
+  }
+}
+
+/* ReviewCash Premium Utilities */
+@layer utilities {
+  .glass-panel {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10;
   }
   
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  .glass-panel-heavy {
+    @apply bg-[#141414]/80 backdrop-blur-2xl border border-[#2A2A2A];
   }
-}
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.mask-image-linear-top {
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-}
-
-/* Orbit 5.0 Glassmorphism */
-.glass-panel {
-  background-color: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 8px 32px rgba(0,0,0,0.4);
-}
-
-.glass-panel-heavy {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(64px);
-  -webkit-backdrop-filter: blur(64px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 40px rgba(0,0,0,0.6);
-}
-
-.glass-floating-dock {
-  background-color: rgba(5, 5, 5, 0.6);
-  backdrop-filter: blur(64px);
-  -webkit-backdrop-filter: blur(64px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 40px rgba(0,0,0,0.8);
-}
-
-/* Glows */
-.ambient-glow-blue {
-  position: absolute;
-  width: 800px;
-  height: 800px;
-  background-color: rgba(37, 99, 235, 0.15);
-  border-radius: 9999px;
-  filter: blur(120px);
-  pointer-events: none;
-}
-
-.ambient-glow-purple {
-  position: absolute;
-  width: 800px;
-  height: 800px;
-  background-color: rgba(147, 51, 234, 0.15);
-  border-radius: 9999px;
-  filter: blur(120px);
-  pointer-events: none;
-}
-
-/* Animations */
-.spring-transition {
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-}
-
-.animate-fade-up {
-  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.stagger-1 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 100ms; opacity: 0; }
-.stagger-2 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 200ms; opacity: 0; }
-.stagger-3 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 300ms; opacity: 0; }
-.stagger-4 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 400ms; opacity: 0; }
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A2BE2] to-[#00E5FF];
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl bg-white text-black font-semibold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2;
+  }
+
+  .btn-neon {
+    @apply px-6 py-3 rounded-xl bg-[#00E5FF] text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,229,255,0.4)] flex items-center justify-center gap-2 hover:shadow-[0_0_50px_rgba(0,229,255,0.6)];
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl bg-transparent border border-white/10 text-white font-medium text-sm hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Custom Grid Background for depth */
+  .bg-grid-rc {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .bg-noise {
+    background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    pointer-events: none;
   }
 }

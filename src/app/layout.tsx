@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Aura Finance",
-  description: "B2B Financial Operating System",
+  title: "ReviewCash",
+  description: "Monetize your attention. Complete micro-tasks. Get paid instantly.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`h-full antialiased ${inter.variable}`}>
-      <body className="min-h-full flex flex-col font-sans tracking-tight bg-[#050505] text-white">
+      <body className="min-h-full flex flex-col font-sans tracking-tight bg-[#0A0A0A] text-[#EDEDED] selection:bg-[#00E5FF]/30">
         <AuthProvider>
           {children}
         </AuthProvider>
