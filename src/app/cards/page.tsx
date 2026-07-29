@@ -12,6 +12,7 @@ export default function CardsPage() {
   const [cards, setCards] = useState<CorporateCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showIssueModal, setShowIssueModal] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -50,7 +51,10 @@ export default function CardsPage() {
               <span className="text-[13px] text-zinc-400"><span className="text-zinc-500 font-medium">{cards.filter(c => c.status === 'Frozen').length}</span> {t.frozen}</span>
             </div>
           </div>
-          <button className="px-5 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+          <button 
+            onClick={() => setShowIssueModal(true)}
+            className="px-5 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+          >
             <Plus size={16} /> {t.issueNewCard}
           </button>
         </header>
@@ -76,7 +80,10 @@ export default function CardsPage() {
             
             {/* "Add Card" Ghost slot */}
             {!isLoading && (
-              <div className="shrink-0 w-[320px] h-[200px] rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/[0.02] cursor-pointer spring-transition snap-center group">
+              <div 
+                onClick={() => setShowIssueModal(true)}
+                className="shrink-0 w-[320px] h-[200px] rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/[0.02] cursor-pointer spring-transition snap-center group"
+              >
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:scale-110 spring-transition">
                   <Plus size={20} />
                 </div>
@@ -99,6 +106,45 @@ export default function CardsPage() {
             </>
           )}
         </div>
+
+        {/* Issue Card Modal Overlay */}
+        {showIssueModal && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl flex flex-col gap-6">
+              <h2 className="text-xl font-medium tracking-tight">Issue New Card</h2>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Card Type</label>
+                  <select className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm">
+                    <option value="virtual">Virtual Card</option>
+                    <option value="physical">Physical Card</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Monthly Limit</label>
+                  <input type="number" placeholder="5000" className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm" />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-4">
+                <button 
+                  onClick={() => setShowIssueModal(false)}
+                  className="px-5 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    alert('Card Issued Successfully!');
+                    setShowIssueModal(false);
+                  }}
+                  className="px-5 py-2.5 bg-indigo-500 rounded-xl text-[13px] font-medium hover:bg-indigo-400 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+                >
+                  Confirm Issue
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>

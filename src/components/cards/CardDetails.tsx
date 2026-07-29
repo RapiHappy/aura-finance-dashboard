@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CorporateCard } from '@/lib/api';
 import { Settings2, Snowflake, Play, CreditCard, Activity, Copy, ArrowUpRight } from 'lucide-react';
 import { Badge } from '../dashboard/Widgets';
 
 export function CardSettings({ card }: { card: CorporateCard }) {
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [isFrozen, setIsFrozen] = useState(card.status !== 'Active');
+
+  useEffect(() => {
+    setIsFrozen(card.status !== 'Active');
+    setIsRevealed(false);
+  }, [card.id, card.status]);
+
   const pct = Math.min((card.spent / card.limit) * 100, 100);
   const isNearLimit = pct > 80;
+
+  const currentStatus = isFrozen ? 'Frozen' : 'Active';
 
   return (
     <div className="flex-1 min-w-[320px] max-w-[500px] p-8 border border-white/[0.03] rounded-3xl bg-[#030303] shadow-[inset_0_1px_0_rgba(255,255,255,0.02)] flex flex-col stagger-2">
@@ -13,7 +23,7 @@ export function CardSettings({ card }: { card: CorporateCard }) {
         <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-2">
           <Settings2 size={14} /> Card Settings
         </h3>
-        <Badge variant={card.status === 'Active' ? 'success' : 'default'}>{card.status}</Badge>
+        <Badge variant={currentStatus === 'Active' ? 'success' : 'default'}>{currentStatus}</Badge>
       </div>
 
       {/* Spend Limit Progress */}
@@ -51,8 +61,13 @@ export function CardSettings({ card }: { card: CorporateCard }) {
         
         <div className="flex justify-between items-center py-3 border-b border-white/[0.02]">
           <span className="text-[13px] text-zinc-400">Card Number</span>
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <span className="text-[13px] font-mono text-white tracking-widest">•••• {card.last4}</span>
+          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => {
+            navigator.clipboard.writeText(`4111 2222 3333 ${card.last4}`);
+            alert('Card number copied to clipboard!');
+          }}>
+            <span className="text-[13px] font-mono text-white tracking-widest">
+              {isRevealed ? `4111 2222 3333 ${card.last4}` : `•••• •••• •••• ${card.last4}`}
+            </span>
             <Copy size={12} className="text-zinc-600 group-hover:text-white spring-transition" />
           </div>
         </div>
@@ -65,16 +80,25 @@ export function CardSettings({ card }: { card: CorporateCard }) {
 
       {/* Actions */}
       <div className="flex gap-3 mt-8">
-        <button className="flex-1 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-          <CreditCard size={16} /> Reveal Details
+        <button 
+          onClick={() => setIsRevealed(!isRevealed)}
+          className="flex-1 py-3 bg-white text-black rounded-xl text-[13px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+        >
+          <CreditCard size={16} /> {isRevealed ? 'Hide Details' : 'Reveal Details'}
         </button>
         
-        {card.status === 'Active' ? (
-          <button className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-amber-500/10 hover:text-amber-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-amber-500/20">
+        {currentStatus === 'Active' ? (
+          <button 
+            onClick={() => setIsFrozen(true)}
+            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-amber-500/10 hover:text-amber-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-amber-500/20"
+          >
             <Snowflake size={16} /> Freeze
           </button>
         ) : (
-          <button className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-emerald-500/10 hover:text-emerald-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-emerald-500/20">
+          <button 
+            onClick={() => setIsFrozen(false)}
+            className="px-5 py-3 bg-white/5 text-white rounded-xl text-[13px] font-medium hover:bg-emerald-500/10 hover:text-emerald-400 spring-transition flex items-center justify-center gap-2 border border-white/5 hover:border-emerald-500/20"
+          >
             <Play size={16} /> Unfreeze
           </button>
         )}
@@ -97,7 +121,10 @@ export function CardTransactions({ card }: { card: CorporateCard }) {
         <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-2">
           <Activity size={14} /> Recent Activity
         </h3>
-        <button className="text-[13px] text-zinc-500 hover:text-white spring-transition flex items-center gap-1">
+        <button 
+          onClick={() => window.location.href = '/transactions'}
+          className="text-[13px] text-zinc-500 hover:text-white spring-transition flex items-center gap-1"
+        >
           View Ledger <ArrowUpRight size={14} className="lucide lucide-arrow-up-right" />
         </button>
       </div>
