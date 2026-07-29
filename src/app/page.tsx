@@ -1,27 +1,132 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, CheckCircle2, CreditCard, PieChart, ShieldCheck, Activity, Layers, Globe, ChevronDown } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, CreditCard, PieChart, ShieldCheck, Activity, Layers, Globe, ChevronDown, Quote } from 'lucide-react';
+
+const i18n = {
+  EN: {
+    nav: { platform: "Platform", infra: "Infrastructure", security: "Security", signin: "Sign In", openDash: "Open Dashboard" },
+    hero: {
+      badge: "SOC-2 Type II Certified Platform",
+      title1: "The Elite Financial OS for ",
+      title2: "Modern Teams.",
+      desc: "Automate expenses, issue corporate cards, and control budgets in real-time. Designed specifically for fast-growing companies that demand absolute precision.",
+      btnPrimary: "Explore Dashboard",
+      btnSecondary: "View Infrastructure",
+      disclaimer: "*No credit checks required for corporate cards. Instant setup."
+    },
+    metrics: { title: "Real-Time System Metrics", uptime: "System Uptime", latency: "Avg API Latency", speed: "Transaction Speed", ai: "Fraud Prevention AI" },
+    trusted: "TRUSTED BY INNOVATIVE TEAMS WORLDWIDE",
+    steps: {
+      title: "Financial control in 3 steps.",
+      desc: "Replace clunky legacy banking with intelligent automation.",
+      s1: "Issue Cards Instantly", d1: "Generate virtual and physical corporate cards in one click. Set custom limits for every team member.",
+      s2: "Automate Budgets", d2: "Create dynamic budgets that automatically track expenses by category, vendor, or project.",
+      s3: "Smart AI Inbox", d3: "Approve expenses in seconds. Our AI categorizes receipts and matches them to transactions automatically."
+    },
+    showcase: {
+      badge: "Dashboard Intelligence",
+      title: "See your entire company runway at a glance.",
+      desc: "Aura Finance brings every transaction, budget, and approval into a single, unified interface. Powered by advanced machine learning to predict burn rate and extend your runway.",
+      bullets: ["Real-time cash flow monitoring", "Automated receipt matching", "Multi-entity consolidation", "Direct ERP integrations"],
+      btn: "Experience the Dashboard",
+      box1: "Live Pulse", box2: "Marketing", box3: "Global Scale", box3desc: "Settle in USD, EUR, and 40+ currencies instantly without FX markups."
+    },
+    testimonials: {
+      title: "Loved by CFOs and Founders",
+      t1: "Aura Finance completely changed how we manage our burn rate. The AI insights alone saved us $40k last month.",
+      n1: "Sarah Jenkins, CFO at TechFlow",
+      t2: "Issuing cards to our remote team used to take days. Now it takes exactly 3 seconds. Flawless execution.",
+      n2: "Marcus Chen, Founder of BuildOps",
+      t3: "The cleanest financial UI I have ever seen. It feels like magic compared to our old corporate bank.",
+      n3: "Elena Rodriguez, VP Ops"
+    },
+    cta: {
+      title: "Ready to upgrade your financial stack?",
+      desc: "Join 10,000+ companies operating at the speed of thought. Setup takes less than 5 minutes.",
+      btn: "Get Started Now"
+    },
+    footer: {
+      product: "Product", cards: "Corporate Cards", budgets: "Budgets", inbox: "Smart Inbox",
+      company: "Company", about: "About Us", careers: "Careers", contact: "Contact",
+      legal: "Legal", terms: "Terms of Service", privacy: "Privacy Policy",
+      rights: "Aura Finance. All rights reserved. Protected by Anti-Fraud AI."
+    }
+  },
+  RU: {
+    nav: { platform: "Платформа", infra: "Инфраструктура", security: "Безопасность", signin: "Войти", openDash: "Открыть Дашборд" },
+    hero: {
+      badge: "Сертификация SOC-2 Type II",
+      title1: "Элитная Финансовая ОС для ",
+      title2: "Современных Команд.",
+      desc: "Автоматизируйте расходы, выпускайте корпоративные карты и контролируйте бюджеты в реальном времени. Создано для быстрорастущих компаний.",
+      btnPrimary: "Изучить Дашборд",
+      btnSecondary: "Инфраструктура",
+      disclaimer: "*Выпуск карт без проверки кредитной истории. Мгновенная настройка."
+    },
+    metrics: { title: "Метрики Системы", uptime: "Аптайм", latency: "Пинг API", speed: "Скорость Транзакций", ai: "Anti-Fraud ИИ" },
+    trusted: "НАМ ДОВЕРЯЮТ ИННОВАЦИОННЫЕ КОМАНДЫ ПО ВСЕМУ МИРУ",
+    steps: {
+      title: "Финансовый контроль за 3 шага.",
+      desc: "Замените неуклюжий банкинг умной автоматизацией.",
+      s1: "Моментальные Карты", d1: "Выпускайте виртуальные и физические карты в один клик. Настраивайте лимиты для каждого сотрудника.",
+      s2: "Умные Бюджеты", d2: "Создавайте динамические бюджеты, которые автоматически отслеживают расходы по категориям и проектам.",
+      s3: "AI Инбокс", d3: "Утверждайте расходы за секунды. Наш ИИ сам категоризирует чеки и привязывает их к транзакциям."
+    },
+    showcase: {
+      badge: "Интеллектуальный Дашборд",
+      title: "Контролируйте весь runway компании с одного взгляда.",
+      desc: "Aura Finance объединяет транзакции, бюджеты и утверждения в едином интерфейсе. Машинное обучение предсказывает burn rate и продлевает жизнь стартапа.",
+      bullets: ["Мониторинг денежных потоков в реальном времени", "Авто-мэтчинг чеков", "Мульти-счета", "Прямые интеграции с ERP"],
+      btn: "Испытать Дашборд",
+      box1: "Живой Пульс", box2: "Маркетинг", box3: "Глобальный Масштаб", box3desc: "Расчеты в USD, EUR и 40+ валютах мгновенно без скрытых комиссий."
+    },
+    testimonials: {
+      title: "Нас любят CFO и Фаундеры",
+      t1: "Aura Finance полностью изменила наш подход к расходам. Только ИИ-аналитика сэкономила нам $40k за прошлый месяц.",
+      n1: "Сара Дженкинс, CFO TechFlow",
+      t2: "Выпуск карт удаленной команде раньше занимал дни. Теперь это занимает ровно 3 секунды. Безупречно.",
+      n2: "Маркус Чен, Founder BuildOps",
+      t3: "Самый чистый финансовый интерфейс, что я видела. Ощущается как магия по сравнению с нашим старым банком.",
+      n3: "Елена Родригез, VP Ops"
+    },
+    cta: {
+      title: "Готовы обновить свой финансовый стек?",
+      desc: "Присоединяйтесь к 10,000+ компаний, работающих на скорости мысли. Настройка занимает менее 5 минут.",
+      btn: "Начать Работу"
+    },
+    footer: {
+      product: "Продукт", cards: "Корпоративные Карты", budgets: "Бюджеты", inbox: "Смарт Инбокс",
+      company: "Компания", about: "О нас", careers: "Вакансии", contact: "Контакты",
+      legal: "Право", terms: "Пользовательское соглашение", privacy: "Политика конфиденциальности",
+      rights: "Aura Finance. Все права защищены. Защищено Anti-Fraud ИИ."
+    }
+  }
+};
+
+type Lang = 'EN' | 'RU';
 
 export default function AuraFinanceLanding() {
-  const [lang, setLang] = React.useState('EN');
-  const [langOpen, setLangOpen] = React.useState(false);
+  const [lang, setLang] = useState<Lang>('EN');
+  const [langOpen, setLangOpen] = useState(false);
+  
+  const t = i18n[lang];
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden">
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#050505]">
       
       {/* Background Layers */}
       <div className="absolute inset-0 bg-grid-aura z-0" />
       <div className="absolute inset-0 bg-noise z-0" />
       
-      {/* Ambient Neon Glows (Deep B2B Corporate Theme) */}
+      {/* Ambient Neon Glows */}
       <div className="absolute top-[-20%] left-[50%] -translate-x-1/2 w-[800px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
       {/* Header */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-50">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.3)]">
             <Sparkles size={16} className="text-white" />
@@ -29,9 +134,9 @@ export default function AuraFinanceLanding() {
           <span className="font-bold text-xl tracking-tight text-white">Aura Finance</span>
         </div>
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Platform</Link>
-          <Link href="#infrastructure" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Infrastructure</Link>
-          <Link href="#security" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Security</Link>
+          <Link href="#features" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">{t.nav.platform}</Link>
+          <Link href="#infrastructure" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">{t.nav.infra}</Link>
+          <Link href="#security" className="text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">{t.nav.security}</Link>
         </nav>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -42,21 +147,21 @@ export default function AuraFinanceLanding() {
               {lang} <ChevronDown size={14} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
             </button>
             {langOpen && (
-              <div className="absolute top-full right-0 mt-2 w-24 bg-[#141414] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
-                <button onClick={() => { setLang('EN'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">EN - English</button>
-                <button onClick={() => { setLang('RU'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">RU - Русский</button>
+              <div className="absolute top-full right-0 mt-2 w-32 bg-[#141414] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
+                <button onClick={() => { setLang('EN'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">English</button>
+                <button onClick={() => { setLang('RU'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">Русский</button>
               </div>
             )}
           </div>
-          <Link href="/login" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">Sign In</Link>
-          <Link href="/dashboard" className="btn-primary py-2.5 px-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
-            Open Dashboard
+          <Link href="/login" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">{t.nav.signin}</Link>
+          <Link href="/dashboard" className="btn-primary py-2.5 px-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] whitespace-nowrap">
+            {t.nav.openDash}
           </Link>
         </div>
       </header>
 
       {/* Hero Section */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 pt-20 pb-32 relative z-10 flex flex-col items-center text-center">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 pt-20 pb-16 relative z-10 flex flex-col items-center text-center">
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -65,7 +170,7 @@ export default function AuraFinanceLanding() {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border-indigo-500/20 bg-indigo-500/5 mb-8"
         >
           <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-          <span className="text-[11px] font-mono uppercase tracking-widest text-indigo-400">SOC-2 Type II Certified Platform</span>
+          <span className="text-[11px] font-mono uppercase tracking-widest text-indigo-400">{t.hero.badge}</span>
         </motion.div>
 
         <motion.h1 
@@ -74,7 +179,7 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white max-w-5xl leading-[1.1] mb-6"
         >
-          The Elite Financial OS for <span className="text-gradient-primary">Modern Teams.</span>
+          {t.hero.title1} <span className="text-gradient-primary">{t.hero.title2}</span>
         </motion.h1>
 
         <motion.p 
@@ -83,7 +188,7 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="text-lg md:text-xl text-[#A1A1AA] max-w-2xl mb-12 font-medium"
         >
-          Automate expenses, issue corporate cards, and control budgets in real-time. Designed specifically for fast-growing companies that demand absolute precision.
+          {t.hero.desc}
         </motion.p>
 
         <motion.div 
@@ -93,10 +198,10 @@ export default function AuraFinanceLanding() {
           className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-black font-semibold text-base hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-            Explore Dashboard <ArrowRight size={18} />
+            {t.hero.btnPrimary} <ArrowRight size={18} />
           </Link>
           <Link href="#infrastructure" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-transparent border border-white/10 text-white font-medium text-base hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2">
-            View Infrastructure
+            {t.hero.btnSecondary}
           </Link>
         </motion.div>
         
@@ -106,7 +211,7 @@ export default function AuraFinanceLanding() {
           transition={{ duration: 1, delay: 0.8 }}
           className="mt-6 text-xs text-[#A1A1AA] font-mono"
         >
-          *No credit checks required for corporate cards. Instant setup.
+          {t.hero.disclaimer}
         </motion.p>
 
         {/* Hero Visual Mockup */}
@@ -114,81 +219,68 @@ export default function AuraFinanceLanding() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-5xl mt-16 relative perspective-1000"
+          className="w-full max-w-5xl mt-16 relative perspective-1000 z-20"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent z-20 pointer-events-none h-full" />
           <HeroMockup />
         </motion.div>
 
-        {/* Live Metrics Ticker */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-16 w-full max-w-4xl z-30"
-        >
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[#A1A1AA] mb-4 text-left">Real-Time System Metrics</p>
-          <div className="flex gap-4 overflow-hidden relative w-full h-16 mask-image-linear-horizontal">
-            <LiveMetricsRow />
-          </div>
-        </motion.div>
       </main>
 
+      {/* Trusted By Section */}
+      <section className="w-full border-y border-white/5 bg-black/40 py-8 relative z-30">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
+           <p className="text-[10px] font-mono uppercase tracking-widest text-[#A1A1AA] mb-6">{t.trusted}</p>
+           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+             {/* Mock Logos */}
+             <div className="flex items-center gap-2 font-bold text-xl"><div className="w-6 h-6 bg-white rounded-full"/> ACME Corp</div>
+             <div className="flex items-center gap-2 font-bold text-xl tracking-tighter"><div className="w-6 h-6 bg-indigo-500 rotate-45"/> NEXUS</div>
+             <div className="flex items-center gap-2 font-black text-xl italic text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">VELOCITY</div>
+             <div className="flex items-center gap-2 font-bold text-xl"><Layers /> Stacked</div>
+           </div>
+        </div>
+      </section>
+
       {/* Core Infrastructure Section */}
-      <section id="infrastructure" className="w-full py-24 relative z-10 bg-[#0A0A0A] border-t border-white/5">
+      <section id="infrastructure" className="w-full py-32 relative z-10 bg-[#0A0A0A]">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">Financial control in 3 steps.</h2>
-            <p className="text-[#A1A1AA] text-lg">Replace clunky legacy banking with intelligent automation.</p>
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6">{t.steps.title}</h2>
+            <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">{t.steps.desc}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <StepCard 
-              number="01" 
-              title="Issue Cards Instantly" 
-              desc="Generate virtual and physical corporate cards in one click. Set custom limits for every team member." 
-              icon={<CreditCard size={32} className="text-indigo-400" />} 
-            />
-            <StepCard 
-              number="02" 
-              title="Automate Budgets" 
-              desc="Create dynamic budgets that automatically track expenses by category, vendor, or project." 
-              icon={<PieChart size={32} className="text-emerald-400" />} 
-            />
-            <StepCard 
-              number="03" 
-              title="Smart AI Inbox" 
-              desc="Approve expenses in seconds. Our AI categorizes receipts and matches them to transactions automatically." 
-              icon={<CheckCircle2 size={32} className="text-indigo-400" />} 
-            />
+            <StepCard number="01" title={t.steps.s1} desc={t.steps.d1} icon={<CreditCard size={32} className="text-indigo-400" />} />
+            <StepCard number="02" title={t.steps.s2} desc={t.steps.d2} icon={<PieChart size={32} className="text-emerald-400" />} />
+            <StepCard number="03" title={t.steps.s3} desc={t.steps.d3} icon={<CheckCircle2 size={32} className="text-indigo-400" />} />
           </div>
         </div>
       </section>
 
       {/* Bento Grid Features Showcase */}
-      <section id="features" className="w-full py-32 relative z-10 bg-indigo-500/5 border-t border-indigo-500/10 overflow-hidden">
+      <section id="features" className="w-full py-32 relative z-10 bg-indigo-500/5 border-y border-indigo-500/10 overflow-hidden">
         <div className="absolute top-[50%] left-[-10%] w-[500px] h-[500px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
         
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 relative z-10">
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6">
-              <span className="text-[11px] font-mono uppercase tracking-widest text-indigo-400">Dashboard Intelligence</span>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-indigo-400">{t.showcase.badge}</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
-              See your entire company runway at a glance.
+              {t.showcase.title}
             </h2>
             <p className="text-[#A1A1AA] text-lg mb-8">
-              Aura Finance brings every transaction, budget, and approval into a single, unified interface. Powered by advanced machine learning to predict burn rate and extend your runway.
+              {t.showcase.desc}
             </p>
             <ul className="flex flex-col gap-4 mb-10">
-              {['Real-time cash flow monitoring', 'Automated receipt matching', 'Multi-entity consolidation', 'Direct ERP integrations'].map((item, i) => (
+              {t.showcase.bullets.map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-white text-sm font-medium">
                   <CheckCircle2 size={18} className="text-indigo-400" /> {item}
                 </li>
               ))}
             </ul>
             <Link href="/dashboard" className="px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold text-base hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all inline-block">
-              Experience the Dashboard
+              {t.showcase.btn}
             </Link>
           </div>
           
@@ -198,7 +290,7 @@ export default function AuraFinanceLanding() {
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-center justify-between mb-4">
                 <span className="font-mono text-[11px] uppercase tracking-widest text-[#A1A1AA] flex items-center gap-2">
-                   <Activity size={12} className="text-emerald-400" /> Live Pulse
+                   <Activity size={12} className="text-emerald-400" /> {t.showcase.box1}
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
@@ -221,7 +313,7 @@ export default function AuraFinanceLanding() {
             {/* Bento Box 2: Budgets */}
             <div className="col-span-1 glass-panel p-6 rounded-3xl group hover:border-white/20 transition-colors">
               <PieChart size={24} className="text-indigo-400 mb-4" />
-              <h4 className="text-white font-medium mb-1">Marketing</h4>
+              <h4 className="text-white font-medium mb-1">{t.showcase.box2}</h4>
               <p className="text-2xl font-bold font-mono text-white tracking-tighter">$12.4k</p>
               <p className="text-[10px] text-zinc-500 font-mono mt-1">/ $15k Goal</p>
               <div className="h-1 w-full bg-white/5 mt-4 rounded-full overflow-hidden">
@@ -232,33 +324,105 @@ export default function AuraFinanceLanding() {
             {/* Bento Box 3: Global */}
             <div className="col-span-1 glass-panel-heavy p-6 rounded-3xl bg-black/60 group hover:border-white/20 transition-colors border-indigo-500/20">
               <Globe size={24} className="text-purple-400 mb-4" />
-              <h4 className="text-white font-medium mb-1">Global Scale</h4>
-              <p className="text-xs text-[#A1A1AA] leading-relaxed">Settle in USD, EUR, and 40+ currencies instantly without FX markups.</p>
+              <h4 className="text-white font-medium mb-1">{t.showcase.box3}</h4>
+              <p className="text-xs text-[#A1A1AA] leading-relaxed">{t.showcase.box3desc}</p>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer id="security" className="w-full py-12 border-t border-white/10 bg-[#050505] relative z-10">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-white" />
-            <span className="font-bold tracking-tight text-white">Aura Finance</span>
+      {/* Testimonials Section */}
+      <section className="w-full py-32 relative z-10 bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">{t.testimonials.title}</h2>
           </div>
           
-          <div className="flex gap-8">
-            <span className="text-xs text-[#A1A1AA] flex items-center gap-2"><ShieldCheck size={14}/> SOC-2 Type II Certified</span>
-            <span className="text-xs text-[#A1A1AA] flex items-center gap-2"><Layers size={14}/> Bank-Level 256-bit Encryption</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="glass-panel p-8 rounded-3xl relative">
+              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
+              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t1}"</p>
+              <div className="flex items-center gap-3 mt-auto">
+                <div className="w-10 h-10 rounded-full bg-zinc-800" />
+                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n1}</span>
+              </div>
+            </div>
+            <div className="glass-panel-heavy p-8 rounded-3xl relative border-indigo-500/30">
+              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
+              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t2}"</p>
+              <div className="flex items-center gap-3 mt-auto">
+                <div className="w-10 h-10 rounded-full bg-zinc-800" />
+                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n2}</span>
+              </div>
+            </div>
+            <div className="glass-panel p-8 rounded-3xl relative">
+              <Quote size={32} className="text-indigo-500/20 absolute top-6 right-6" />
+              <p className="text-white text-sm leading-relaxed mb-6">"{t.testimonials.t3}"</p>
+              <div className="flex items-center gap-3 mt-auto">
+                <div className="w-10 h-10 rounded-full bg-zinc-800" />
+                <span className="text-xs text-[#A1A1AA] font-medium">{t.testimonials.n3}</span>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
+      {/* Final CTA Banner */}
+      <section className="w-full py-20 relative z-10 px-6">
+        <div className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 relative z-10">{t.cta.title}</h2>
+          <p className="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto relative z-10">{t.cta.desc}</p>
+          <Link href="/register" className="inline-block px-10 py-5 rounded-2xl bg-white text-black font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] relative z-10">
+            {t.cta.btn}
+          </Link>
+        </div>
+      </section>
+
+      {/* Expanded Footer */}
+      <footer id="security" className="w-full pt-20 pb-12 border-t border-white/10 bg-[#030303] relative z-10 mt-12">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div className="col-span-1 md:col-span-1">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles size={20} className="text-indigo-400" />
+              <span className="font-bold text-xl tracking-tight text-white">Aura Finance</span>
+            </div>
+            <p className="text-xs text-zinc-500 mb-6">The operating system for modern business finance.</p>
+            <div className="flex gap-4">
+              <span className="text-xs text-zinc-400 flex items-center gap-1.5"><ShieldCheck size={14}/> SOC-2 Certified</span>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-white font-medium mb-4">{t.footer.product}</h4>
+            <ul className="flex flex-col gap-3 text-sm text-zinc-500">
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.cards}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.budgets}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.inbox}</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white font-medium mb-4">{t.footer.company}</h4>
+            <ul className="flex flex-col gap-3 text-sm text-zinc-500">
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.about}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.careers}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.contact}</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white font-medium mb-4">{t.footer.legal}</h4>
+            <ul className="flex flex-col gap-3 text-sm text-zinc-500">
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.terms}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">{t.footer.privacy}</Link></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-white/5 text-center">
           <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} Aura Finance. All rights reserved.
+            &copy; {new Date().getFullYear()} {t.footer.rights}
           </p>
         </div>
       </footer>
-
     </div>
   );
 }
@@ -278,37 +442,9 @@ function StepCard({ number, title, desc, icon }: { number: string, title: string
   );
 }
 
-function LiveMetricsRow() {
-  const metrics = [
-    { label: 'System Uptime', value: '99.999%', status: 'Operational' },
-    { label: 'Avg API Latency', value: '42ms', status: 'Optimal' },
-    { label: 'Transaction Speed', value: '<1s', status: 'Optimal' },
-    { label: 'Fraud Prevention AI', value: 'Active', status: 'Scanning' },
-  ];
-
-  return (
-    <motion.div 
-      className="flex gap-4 whitespace-nowrap"
-      animate={{ x: [0, -1000] }}
-      transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-    >
-      {[...metrics, ...metrics, ...metrics].map((m, i) => (
-        <div key={i} className="glass-panel px-4 py-2.5 rounded-xl flex items-center gap-3 shrink-0">
-          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-          <span className="text-sm font-medium text-white">{m.label}</span>
-          <span className="text-xs text-[#A1A1AA]">currently at</span>
-          <span className="text-sm font-bold text-white">{m.value}</span>
-          <span className="text-xs font-mono text-zinc-500">({m.status})</span>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-
 function HeroMockup() {
   return (
-    <div className="w-full aspect-[21/9] rounded-t-3xl border border-white/10 border-b-0 bg-[#0A0A0A] overflow-hidden relative shadow-[0_-20px_80px_rgba(99,102,241,0.15)] flex">
-      {/* Mockup Sidebar */}
+    <div className="w-full aspect-[21/9] rounded-t-3xl border border-white/10 border-b-0 bg-[#0A0A0A] overflow-hidden relative shadow-[0_-20px_80px_rgba(99,102,241,0.15)] flex mx-auto max-w-5xl">
       <div className="w-48 h-full border-r border-white/5 bg-[#050505] p-4 flex flex-col gap-2">
         <div className="w-24 h-4 rounded bg-white/10 mb-6" />
         <div className="w-full h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30" />
@@ -317,11 +453,9 @@ function HeroMockup() {
         <div className="w-full h-8 rounded-lg bg-white/5" />
       </div>
       
-      {/* Mockup Content */}
       <div className="flex-1 p-8 flex flex-col gap-6 relative">
         <div className="absolute top-[0] right-[10%] w-[300px] h-[300px] bg-purple-500/20 blur-[100px] rounded-full pointer-events-none z-0" />
         
-        {/* Mockup Header */}
         <div className="flex justify-between items-center z-10">
           <div>
             <div className="w-32 h-6 rounded bg-white/20 mb-2" />
@@ -333,7 +467,6 @@ function HeroMockup() {
           </div>
         </div>
 
-        {/* Mockup Widgets */}
         <div className="grid grid-cols-3 gap-4 z-10 mt-4">
           <div className="col-span-2 h-48 rounded-2xl border border-white/10 bg-white/[0.02] p-4 flex flex-col justify-end">
             <div className="flex items-end gap-2 h-24 w-full">
