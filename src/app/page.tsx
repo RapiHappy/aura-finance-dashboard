@@ -38,19 +38,19 @@ export default function AuraFinanceLanding() {
           <div className="relative">
             <button 
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5"
+              className="flex items-center gap-1.5 text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 active:scale-95"
             >
               {lang} <ChevronDown size={14} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
             </button>
             {langOpen && (
               <div className="absolute top-full right-0 mt-2 w-32 bg-[#141414] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
-                <button onClick={() => { setLang('EN'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">English</button>
-                <button onClick={() => { setLang('RU'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors">Русский</button>
+                <button onClick={() => { setLang('EN'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors active:bg-white/10">English</button>
+                <button onClick={() => { setLang('RU'); setLangOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors active:bg-white/10">Русский</button>
               </div>
             )}
           </div>
           <Link href="/login" className="hidden sm:block text-sm font-medium text-[#A1A1AA] hover:text-white transition-colors">{t.nav.signin}</Link>
-          <Link href="/dashboard" className="btn-primary py-2.5 px-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] whitespace-nowrap">
+          <Link href="/dashboard" className="btn-primary py-2.5 px-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] whitespace-nowrap active:scale-95 transition-all">
             {t.nav.openDash}
           </Link>
         </div>

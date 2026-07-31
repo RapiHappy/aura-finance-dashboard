@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AreaChart, Area, Tooltip, ResponsiveContainer, Dot } from 'recharts';
@@ -114,7 +114,7 @@ export function TopNavigation() {
       <div className="flex items-center gap-3 pointer-events-auto">
         <button 
           onClick={() => setLang(lang === 'EN' ? 'RU' : 'EN')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all mr-2"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all active:scale-95 mr-2"
         >
           <Globe size={14} />
           {lang}
@@ -123,7 +123,9 @@ export function TopNavigation() {
         <div className="glass-panel flex p-1 rounded-lg">
           {['7D', '30D', '1Y'].map(period => (
             <button key={period} className={`px-4 py-1.5 rounded-md text-[11px] font-mono tracking-widest spring-transition ${period === '30D' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}>
-              {period}
+              {period === '7D' ? (lang === 'RU' ? '7Д' : '7D') : 
+               period === '30D' ? (lang === 'RU' ? '30Д' : '30D') : 
+               (lang === 'RU' ? '1Г' : '1Y')}
             </button>
           ))}
         </div>
@@ -164,7 +166,10 @@ const CustomDot = (props: any) => {
 
 // --- Luminous Chart Hero ---
 export function LuminousChart({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
+  const [isCashModalOpen, setIsCashModalOpen] = useState(false);
+  const [isBurnModalOpen, setIsBurnModalOpen] = useState(false);
+  const [runwayScenario, setRunwayScenario] = useState<'baseline' | 'conservative' | 'optimized'>('baseline');
 
   return (
     <div className="w-full h-[65vh] min-h-[500px] relative">
@@ -173,9 +178,15 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
 
       {/* Floating Metrics Overlay */}
       <div className="absolute top-40 left-10 z-20 flex gap-8">
-        <div className="glass-panel-heavy p-8 rounded-3xl min-w-[320px] stagger-2 relative overflow-hidden group">
+        <div 
+          onClick={() => setIsCashModalOpen(true)}
+          className="glass-panel-heavy p-8 rounded-3xl min-w-[320px] stagger-2 relative overflow-hidden group cursor-pointer hover:border-white/20 spring-transition"
+        >
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
-          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">{t.totalCash}</p>
+          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest flex items-center justify-between">
+            <span>{t.totalCash}</span>
+            <span className="text-[9px] text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">{lang === 'RU' ? 'Детали' : 'Details'}</span>
+          </p>
           <h2 className="text-6xl font-semibold tracking-tighter font-mono text-white mb-3">
             {isLoading ? <div className="h-14 w-48 bg-white/5 animate-pulse rounded-md" /> : data?.totalCash}
           </h2>
@@ -186,8 +197,15 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
           </div>
         </div>
 
-        <div className="glass-panel p-8 rounded-3xl min-w-[280px] stagger-3">
-          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest">{t.burnRate}</p>
+        <div 
+          onClick={() => setIsBurnModalOpen(true)}
+          className="glass-panel p-8 rounded-3xl min-w-[280px] stagger-3 relative overflow-hidden group cursor-pointer hover:border-white/20 spring-transition"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
+          <p className="text-[10px] text-zinc-500 font-mono mb-4 uppercase tracking-widest flex items-center justify-between">
+            <span>{t.burnRate}</span>
+            <span className="text-[9px] text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">{lang === 'RU' ? 'Прогноз' : 'Forecast'}</span>
+          </p>
           <h2 className="text-5xl font-semibold tracking-tighter font-mono text-white mb-3">
             {isLoading ? <div className="h-12 w-40 bg-white/5 animate-pulse rounded-md" /> : data?.burnRate?.split(' ')[0]}
           </h2>
@@ -211,6 +229,139 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
           </p>
         </div>
       </div>
+
+      {/* Cash Breakdown Modal */}
+      {isCashModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsCashModalOpen(false)} />
+          <div className="relative w-full max-w-lg glass-panel-heavy rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl z-10 flex flex-col gap-6">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-lg font-medium text-white tracking-tight">{lang === 'RU' ? 'Распределение Баланса' : 'Cash Account Breakdown'}</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">{lang === 'RU' ? 'Подключенные банковские счета и казначейство' : 'Connected bank accounts & treasury holdings'}</p>
+              </div>
+              <button 
+                onClick={() => setIsCashModalOpen(false)}
+                className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white spring-transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-white">Silicon Valley Bank</p>
+                  <p className="text-xs text-zinc-500 font-mono">Operating Account ••8492</p>
+                </div>
+                <span className="text-sm font-mono text-white font-medium">$2,140,500</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-white">JPMorgan Chase</p>
+                  <p className="text-xs text-zinc-500 font-mono">Payroll Reserve ••1044</p>
+                </div>
+                <span className="text-sm font-mono text-white font-medium">$1,200,000</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-white">Mercury Treasury (US T-Bills)</p>
+                  <p className="text-xs text-zinc-500 font-mono">Yield 5.2% APY • High Yield</p>
+                </div>
+                <span className="text-sm font-mono text-emerald-400 font-medium">$1,080,000</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-4 border-t border-white/10">
+              <span className="text-xs font-mono text-zinc-400">{lang === 'RU' ? 'Всего:' : 'Total Cash:'} <strong className="text-white">{data?.totalCash}</strong></span>
+              <button 
+                onClick={() => setIsCashModalOpen(false)}
+                className="px-5 py-2 bg-indigo-500 text-white rounded-xl text-xs font-medium hover:bg-indigo-400 spring-transition"
+              >
+                {lang === 'RU' ? 'Закрыть' : 'Close'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Burn Rate Runway Forecast Modal */}
+      {isBurnModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsBurnModalOpen(false)} />
+          <div className="relative w-full max-w-lg glass-panel-heavy rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl z-10 flex flex-col gap-6">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-lg font-medium text-white tracking-tight">{lang === 'RU' ? 'Прогноз Runway & Сжигания' : 'Runway & Burn Rate Forecast'}</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">{lang === 'RU' ? 'Моделирование выживаемости компании по сценариям' : 'Simulate financial runway under different operating models'}</p>
+              </div>
+              <button 
+                onClick={() => setIsBurnModalOpen(false)}
+                className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white spring-transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Scenario selector */}
+            <div className="grid grid-cols-3 gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/5">
+              <button
+                onClick={() => setRunwayScenario('baseline')}
+                className={`py-2 rounded-xl text-xs font-medium spring-transition ${
+                  runwayScenario === 'baseline' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {lang === 'RU' ? 'Базовый' : 'Baseline'}
+              </button>
+
+              <button
+                onClick={() => setRunwayScenario('conservative')}
+                className={`py-2 rounded-xl text-xs font-medium spring-transition ${
+                  runwayScenario === 'conservative' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {lang === 'RU' ? 'Консервативный' : 'Conservative'}
+              </button>
+
+              <button
+                onClick={() => setRunwayScenario('optimized')}
+                className={`py-2 rounded-xl text-xs font-medium spring-transition ${
+                  runwayScenario === 'optimized' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {lang === 'RU' ? 'Оптимизация' : 'Optimized'}
+              </button>
+            </div>
+
+            {/* Selected Scenario Card */}
+            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">{lang === 'RU' ? 'Оставшееся время (Runway)' : 'Projected Runway'}</span>
+                <span className="text-2xl font-bold font-mono text-white">
+                  {runwayScenario === 'baseline' ? '18 Months' : runwayScenario === 'conservative' ? '14 Months' : '26 Months'}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                {runwayScenario === 'baseline' && (lang === 'RU' ? 'Текущий темп расходов ($180k/мес). Запас устойчивости высокий.' : 'Current spending rate ($180k/mo). Stable runway through Q4 2027.')}
+                {runwayScenario === 'conservative' && (lang === 'RU' ? 'Увеличение расходов на найм (+25%). Runway сократится до 14 месяцев.' : 'Assumes 25% increase in head-count expansion.')}
+                {runwayScenario === 'optimized' && (lang === 'RU' ? 'Применение ИИ-оптимизации облачных серверов. Запас увеличится до 26 месяцев.' : 'AWS server consolidation extends runway to 26 months.')}
+              </p>
+            </div>
+
+            <div className="flex justify-between items-center pt-4 border-t border-white/10">
+              <span className="text-xs font-mono text-zinc-400">{lang === 'RU' ? 'Сжигание в месяц:' : 'Monthly Burn:'} <strong className="text-white">$180,000</strong></span>
+              <button 
+                onClick={() => setIsBurnModalOpen(false)}
+                className="px-5 py-2 bg-indigo-500 text-white rounded-xl text-xs font-medium hover:bg-indigo-400 spring-transition"
+              >
+                {lang === 'RU' ? 'Закрыть' : 'Close'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* The Chart */}
       <div className="absolute inset-0 z-10 pt-[25vh]">
@@ -260,7 +411,7 @@ export function LuminousChart({ data, isLoading }: { data?: DashboardData | null
 
 // --- Live Pulse Feed ---
 export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   return (
     <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-3 hover:border-white/20 spring-transition hover:shadow-[0_8px_32px_rgba(99,102,241,0.15)]">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
@@ -283,7 +434,11 @@ export function LivePulseFeed({ data, isLoading }: { data?: DashboardData | null
                 </div>
                 <div>
                   <p className="text-[13px] text-zinc-400 tracking-tight">
-                    <span className="font-medium text-white group-hover/item:text-indigo-400 spring-transition">{item.user}</span> {item.action} <span className="text-zinc-300">{item.merchant}</span>
+                    <span className="font-medium text-white group-hover/item:text-indigo-400 spring-transition">{item.user}</span> {
+                      item.action === 'paid' ? (lang === 'RU' ? 'оплатил(а)' : 'paid') : 
+                      item.action === 'received' ? (lang === 'RU' ? 'получил(а)' : 'received') : 
+                      item.action
+                    } <span className="text-zinc-300">{item.merchant}</span>
                   </p>
                   <p className="text-[10px] text-zinc-600 mt-0.5 tracking-wider">{item.time}</p>
                 </div>
@@ -337,7 +492,9 @@ export function BudgetProgress({ data, isLoading }: { data?: DashboardData | nul
 
 // --- Smart Inbox ---
 export function SmartInbox({ data, isLoading }: { data?: DashboardData | null, isLoading: boolean }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
+  const [processingId, setProcessingId] = useState<string | null>(null);
+  
   return (
     <div className="col-span-12 md:col-span-4 p-8 glass-panel rounded-3xl relative overflow-hidden group stagger-4 hover:border-white/20 spring-transition flex flex-col hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)]">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 spring-transition" />
@@ -358,12 +515,33 @@ export function SmartInbox({ data, isLoading }: { data?: DashboardData | null, i
                   <h4 className="text-[13px] font-medium text-white tracking-tight">{ticket.title}</h4>
                   <p className="text-[11px] text-zinc-500 mt-1 tracking-wide">{ticket.subtitle}</p>
                 </div>
-                <Badge variant={ticket.status}>{ticket.status}</Badge>
+                <Badge variant={ticket.status}>
+                  {ticket.status === 'warning' ? (lang === 'RU' ? 'Внимание' : 'Warning') : 
+                   ticket.status === 'critical' ? (lang === 'RU' ? 'Критично' : 'Critical') : 
+                   ticket.status}
+                </Badge>
               </div>
               
               {/* Magnetic Buttons (reveal on hover via absolute position overlay to avoid layout shift) */}
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover/ticket:opacity-100 spring-transition flex items-center justify-center gap-2 px-4">
-                <button className="flex-1 bg-white text-black py-2 rounded-xl text-[11px] font-medium hover:scale-[1.02] active:scale-95 spring-transition flex items-center justify-center gap-1.5"><CheckCircle2 size={14}/> {t.approve}</button>
+                <button 
+                  disabled={processingId === ticket.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setProcessingId(ticket.id);
+                    setTimeout(() => setProcessingId(null), 1500);
+                  }}
+                  className={`flex-1 bg-white text-black py-2 rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 ${processingId === ticket.id ? 'opacity-80 pointer-events-none' : 'hover:scale-[1.02] active:scale-95 spring-transition'}`}
+                >
+                  {processingId === ticket.id ? (
+                    <>
+                      <span className="w-3 h-3 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      {lang === 'RU' ? 'Обработка...' : 'Approving...'}
+                    </>
+                  ) : (
+                    <><CheckCircle2 size={14}/> {t.approve}</>
+                  )}
+                </button>
                 <button className="px-4 py-2 bg-zinc-900 text-white rounded-xl text-[11px] font-medium hover:bg-zinc-800 hover:scale-[1.02] active:scale-95 spring-transition border border-white/5"><XCircle size={14}/></button>
               </div>
             </div>

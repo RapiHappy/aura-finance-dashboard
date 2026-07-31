@@ -2,9 +2,11 @@ import React from 'react';
 import { Budget, HeatmapDay, Anomaly } from '@/lib/api';
 import { AlertTriangle, TrendingUp, TrendingDown, Info, ShieldAlert } from 'lucide-react';
 import { Badge } from '../dashboard/Widgets';
+import { useTranslation } from '@/lib/i18n';
 
 // --- Department Card ---
 export function DepartmentCard({ dept }: { dept: Budget }) {
+  const { lang } = useTranslation();
   const pct = Math.min((dept.spent / dept.total) * 100, 100);
   
   const velocityColors = {
@@ -21,7 +23,10 @@ export function DepartmentCard({ dept }: { dept: Budget }) {
       <div className="flex justify-between items-start">
         <h3 className="text-[15px] font-medium text-white tracking-tight">{dept.category}</h3>
         <div className={`px-2 py-0.5 rounded text-[10px] font-mono tracking-widest uppercase border ${velocityColors[dept.velocity]}`}>
-          {dept.velocity}
+          {dept.velocity === 'Low' ? (lang === 'RU' ? 'Низкая' : 'Low') :
+           dept.velocity === 'Normal' ? (lang === 'RU' ? 'Норма' : 'Normal') :
+           dept.velocity === 'High' ? (lang === 'RU' ? 'Высокая' : 'High') :
+           (lang === 'RU' ? 'Критично' : 'Critical')}
         </div>
       </div>
 
@@ -43,6 +48,7 @@ export function DepartmentCard({ dept }: { dept: Budget }) {
 
 // --- Spend Heatmap ---
 export function SpendHeatmap({ days }: { days: HeatmapDay[] }) {
+  const { t, lang } = useTranslation();
   // Intensity colors: 0 (empty), 1, 2, 3, 4
   const colors = [
     'bg-white/[0.02] border-white/[0.01]', 
@@ -55,13 +61,13 @@ export function SpendHeatmap({ days }: { days: HeatmapDay[] }) {
   return (
     <div className="p-8 glass-panel-heavy flex flex-col rounded-[32px] h-full justify-between">
       <div className="flex justify-between items-center mb-6 shrink-0">
-        <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">Spend Velocity (24 Weeks)</h3>
+        <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">{t.spendHeatmap}</h3>
         <div className="flex items-center gap-2 text-[11px] text-zinc-500 uppercase font-mono tracking-widest">
-          Less
+          {lang === 'RU' ? 'Меньше' : 'Less'}
           <div className="flex gap-1.5 mx-2">
             {colors.map((c, i) => <div key={i} className={`w-4 h-4 rounded-[3px] ${c} border`} />)}
           </div>
-          More
+          {lang === 'RU' ? 'Больше' : 'More'}
         </div>
       </div>
 
@@ -91,13 +97,14 @@ export function SpendHeatmap({ days }: { days: HeatmapDay[] }) {
 
 // --- Anomaly Feed ---
 export function AnomalyFeed({ anomalies }: { anomalies: Anomaly[] }) {
+  const { t, lang } = useTranslation();
   return (
     <div className="p-8 glass-panel flex flex-col rounded-[32px] h-full">
       <div className="flex justify-between items-center mb-6 shrink-0">
         <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-          <ShieldAlert size={14} className="text-amber-500" /> AI Anomaly Detection
+          <ShieldAlert size={14} className="text-amber-500" /> {t.anomalyFeed}
         </h3>
-        <Badge variant="warning">{anomalies.length} Alerts</Badge>
+        <Badge variant="warning">{anomalies.length} {lang === 'RU' ? 'Предупреждений' : 'Alerts'}</Badge>
       </div>
 
       <div className="flex flex-col gap-3 overflow-y-auto no-scrollbar">

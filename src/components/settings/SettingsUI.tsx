@@ -9,18 +9,18 @@ import { Badge } from '@/components/dashboard/Widgets';
 import { useAuth } from '@/lib/auth';
 import { useTranslation } from '@/lib/i18n';
 
-const tabs = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'preferences', label: 'Preferences', icon: Paintbrush },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'security', label: 'Security', icon: Shield },
-];
-
 export function SettingsUI() {
   const [activeTab, setActiveTab] = useState('profile');
   const { user, isAuthenticated, logout } = useAuth();
   const { t, lang, setLang } = useTranslation();
   const router = useRouter();
+
+  const tabs = [
+    { id: 'profile', label: t.profile, icon: User },
+    { id: 'preferences', label: t.preferences, icon: Paintbrush },
+    { id: 'notifications', label: t.notifications, icon: Bell },
+    { id: 'security', label: t.security, icon: Shield },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto w-full flex flex-col gap-8 pb-20 md:pb-0 z-10 relative">
@@ -33,7 +33,7 @@ export function SettingsUI() {
             className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:bg-white/10 text-xs font-medium text-zinc-300 hover:text-white transition-all active:scale-95 shadow-sm"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-indigo-400" />
-            <span>Back to Dashboard</span>
+            <span>{t.backToDash}</span>
           </Link>
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-500">
@@ -47,7 +47,7 @@ export function SettingsUI() {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setLang(lang === 'EN' ? 'RU' : 'EN')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all mr-2"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-zinc-400 hover:text-white transition-all active:scale-95 mr-2"
           >
             <Globe size={14} />
             {lang}
@@ -71,7 +71,7 @@ export function SettingsUI() {
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 text-xs font-medium transition-all active:scale-95"
               >
                 <LogOut size={14} />
-                <span className="hidden sm:inline">Sign Out</span>
+                <span className="hidden sm:inline">{t.signOut}</span>
               </button>
             </div>
           ) : (
@@ -81,14 +81,14 @@ export function SettingsUI() {
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 border border-white/10 hover:bg-white/20 text-white text-xs font-medium transition-all"
               >
                 <LogIn size={14} />
-                <span>Sign In</span>
+                <span>{t.signIn}</span>
               </Link>
               <Link
                 href="/register"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-medium transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)]"
               >
                 <UserPlus size={14} />
-                <span>Register</span>
+                <span>{t.register}</span>
               </Link>
             </div>
           )}
@@ -157,16 +157,22 @@ export function SettingsUI() {
 
 function ProfileSettings() {
   const { user, login } = useAuth();
+  const { t, lang } = useTranslation();
   const [firstName, setFirstName] = useState(user?.name ? user.name.split(' ')[0] : 'Alex');
   const [lastName, setLastName] = useState(user?.name && user.name.split(' ').length > 1 ? user.name.split(' ').slice(1).join(' ') : 'Smith');
   const [email, setEmail] = useState(user?.email || 'alex.smith@aura.fi');
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, `${firstName} ${lastName}`);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setIsSaving(true);
+    setTimeout(() => {
+      login(email, `${firstName} ${lastName}`);
+      setIsSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }, 1500);
   };
 
   return (
@@ -179,8 +185,8 @@ function ProfileSettings() {
       className="flex flex-col gap-10"
     >
       <div>
-        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">Public Profile</h2>
-        <p className="text-sm text-zinc-500">This information will be displayed publicly across your organization workspace.</p>
+        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">{t.publicProfile}</h2>
+        <p className="text-sm text-zinc-500">{t.publicProfileDesc}</p>
       </div>
 
       <div className="flex items-center gap-6">
@@ -191,18 +197,18 @@ function ProfileSettings() {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
           />
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-            <span className="text-xs font-medium text-white">Change</span>
+            <span className="text-xs font-medium text-white">{lang === 'RU' ? 'Изменить' : 'Change'}</span>
           </div>
         </div>
         <div className="flex flex-wrap gap-3">
-          <button type="button" className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-xl hover:scale-105 active:scale-95 transition-all">Upload New</button>
-          <button type="button" className="px-5 py-2.5 bg-transparent border border-white/10 text-white text-xs font-medium rounded-xl hover:bg-white/5 transition-all">Remove</button>
+          <button type="button" className="px-5 py-2.5 bg-white text-black text-xs font-medium rounded-xl hover:scale-105 active:scale-95 transition-all">{t.uploadNew}</button>
+          <button type="button" className="px-5 py-2.5 bg-transparent border border-white/10 text-white text-xs font-medium rounded-xl hover:bg-white/5 transition-all">{t.remove}</button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
-          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">First Name</label>
+          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">{t.firstName}</label>
           <input 
             type="text" 
             value={firstName} 
@@ -211,7 +217,7 @@ function ProfileSettings() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">Last Name</label>
+          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">{t.lastName}</label>
           <input 
             type="text" 
             value={lastName} 
@@ -220,7 +226,7 @@ function ProfileSettings() {
           />
         </div>
         <div className="flex flex-col gap-2 md:col-span-2">
-          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">Email Address</label>
+          <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">{t.emailAddress}</label>
           <input 
             type="email" 
             value={email} 
@@ -233,14 +239,20 @@ function ProfileSettings() {
       <div className="pt-6 border-t border-white/5 flex items-center justify-between">
         {saved ? (
           <span className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
-            <Check size={16} /> Changes saved successfully!
+            <Check size={16} /> {lang === 'RU' ? 'Сохранено!' : 'Changes saved successfully!'}
           </span>
         ) : <span />}
         <button 
           type="submit" 
-          className="px-6 py-3 bg-indigo-500 text-white text-xs font-medium rounded-xl hover:bg-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] active:scale-95 transition-all"
+          disabled={isSaving}
+          className={`px-6 py-3 bg-indigo-500 text-white text-xs font-medium rounded-xl flex items-center justify-center min-w-[160px] ${isSaving ? 'opacity-80 pointer-events-none' : 'hover:bg-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] active:scale-95 transition-all'}`}
         >
-          Save Changes
+          {isSaving ? (
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              {lang === 'RU' || t.saveChanges === 'Сохранить Изменения' ? 'Сохранение...' : 'Saving...'}
+            </div>
+          ) : t.saveChanges}
         </button>
       </div>
     </motion.form>
@@ -248,6 +260,7 @@ function ProfileSettings() {
 }
 
 function PreferencesSettings() {
+  const { t, lang } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -257,8 +270,8 @@ function PreferencesSettings() {
       className="flex flex-col gap-10"
     >
       <div>
-        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">App Preferences</h2>
-        <p className="text-sm text-zinc-500">Customize your experience and workspace look.</p>
+        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">{t.appPreferences}</h2>
+        <p className="text-sm text-zinc-500">{t.appPreferencesDesc}</p>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -266,14 +279,14 @@ function PreferencesSettings() {
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center"><Monitor size={18} className="text-indigo-400" /></div>
             <div>
-              <h4 className="text-sm font-medium text-white">Theme</h4>
-              <p className="text-xs text-zinc-500 mt-0.5">Toggle between light and dark mode</p>
+              <h4 className="text-sm font-medium text-white">{t.theme}</h4>
+              <p className="text-xs text-zinc-500 mt-0.5">{t.themeDesc}</p>
             </div>
           </div>
           <select className="bg-black border border-white/10 text-xs text-white px-4 py-2 rounded-lg outline-none">
-            <option>Dark Mode (Default)</option>
-            <option>Light Mode</option>
-            <option>System Default</option>
+            <option>{lang === 'RU' ? 'Темная (По умолчанию)' : 'Dark Mode (Default)'}</option>
+            <option>{lang === 'RU' ? 'Светлая' : 'Light Mode'}</option>
+            <option>{lang === 'RU' ? 'Системная' : 'System Default'}</option>
           </select>
         </div>
 
@@ -281,8 +294,8 @@ function PreferencesSettings() {
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center"><span className="text-indigo-400 font-bold">$</span></div>
             <div>
-              <h4 className="text-sm font-medium text-white">Base Currency</h4>
-              <p className="text-xs text-zinc-500 mt-0.5">Your primary display currency</p>
+              <h4 className="text-sm font-medium text-white">{t.baseCurrency}</h4>
+              <p className="text-xs text-zinc-500 mt-0.5">{t.baseCurrencyDesc}</p>
             </div>
           </div>
           <select className="bg-black border border-white/10 text-xs text-white px-4 py-2 rounded-lg outline-none">
@@ -297,6 +310,7 @@ function PreferencesSettings() {
 }
 
 function NotificationsSettings() {
+  const { t } = useTranslation();
   const [toggles, setToggles] = useState({ push: true, email: false, updates: true });
 
   const toggle = (key: keyof typeof toggles) => {
@@ -312,26 +326,26 @@ function NotificationsSettings() {
       className="flex flex-col gap-10"
     >
       <div>
-        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">Notifications</h2>
-        <p className="text-sm text-zinc-500">Control when and how you are notified.</p>
+        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">{t.notifSettings}</h2>
+        <p className="text-sm text-zinc-500">{t.notifSettingsDesc}</p>
       </div>
 
       <div className="flex flex-col gap-4">
         <ToggleRow 
-          title="Push Notifications" 
-          desc="Receive alerts on your device for large transactions" 
+          title={t.pushNotif} 
+          desc={t.pushNotifDesc} 
           active={toggles.push} 
           onClick={() => toggle('push')} 
         />
         <ToggleRow 
-          title="Email Summaries" 
-          desc="Weekly digest of your spending and budget" 
+          title={t.emailSumm} 
+          desc={t.emailSummDesc} 
           active={toggles.email} 
           onClick={() => toggle('email')} 
         />
         <ToggleRow 
-          title="Product Updates" 
-          desc="News about Aura OS features and changelogs" 
+          title={t.prodUpdates} 
+          desc={t.prodUpdatesDesc} 
           active={toggles.updates} 
           onClick={() => toggle('updates')} 
         />
@@ -341,6 +355,7 @@ function NotificationsSettings() {
 }
 
 function SecuritySettings() {
+  const { t, lang } = useTranslation();
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -353,29 +368,29 @@ function SecuritySettings() {
       className="flex flex-col gap-10"
     >
       <div>
-        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">Security & Access</h2>
-        <p className="text-sm text-zinc-500">Manage your password, 2FA and connected devices.</p>
+        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">{t.securityAccess}</h2>
+        <p className="text-sm text-zinc-500">{t.securityAccessDesc}</p>
       </div>
 
       <div className="p-6 border border-red-500/20 bg-red-500/5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h4 className="text-sm font-medium text-white flex items-center gap-2"><Lock size={16} className="text-red-400" /> Two-Factor Authentication</h4>
-          <p className="text-xs text-zinc-500 mt-1">Add an extra layer of security to your account.</p>
+          <h4 className="text-sm font-medium text-white flex items-center gap-2"><Lock size={16} className="text-red-400" /> {t.twoFactor}</h4>
+          <p className="text-xs text-zinc-500 mt-1">{t.twoFactorDesc}</p>
         </div>
-        <button className="px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium rounded-xl hover:bg-red-500/20 transition-all">Enable 2FA</button>
+        <button className="px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium rounded-xl hover:bg-red-500/20 transition-all">{t.enable2FA}</button>
       </div>
 
       <div className="flex flex-col gap-4">
-        <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-2">Active Sessions</h3>
+        <h3 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-2">{t.activeSessions}</h3>
         <div className="p-4 border border-white/5 rounded-2xl bg-black flex items-center justify-between group">
           <div className="flex items-center gap-4">
             <Monitor size={20} className="text-zinc-400" />
             <div>
               <p className="text-sm font-medium text-white">MacBook Pro 16"</p>
-              <p className="text-xs text-zinc-500">San Francisco, CA • Active now</p>
+              <p className="text-xs text-zinc-500">{lang === 'RU' ? 'Сан-Франциско, США' : 'San Francisco, CA'} • {lang === 'RU' ? 'Активно сейчас' : 'Active now'}</p>
             </div>
           </div>
-          <Badge variant="success">Current</Badge>
+          <Badge variant="success">{lang === 'RU' ? 'Текущая' : 'Current'}</Badge>
         </div>
         <div 
           onClick={() => { logout(); router.push('/login'); }}
@@ -384,11 +399,11 @@ function SecuritySettings() {
           <div className="flex items-center gap-4">
             <LogOut size={20} className="text-red-400 group-hover:scale-110 transition-transform" />
             <div>
-              <p className="text-sm font-medium text-white">Log Out All Sessions</p>
-              <p className="text-xs text-zinc-500">Sign out of your account on all devices</p>
+              <p className="text-sm font-medium text-white">{t.logOutAll}</p>
+              <p className="text-xs text-zinc-500">{t.logOutAllDesc}</p>
             </div>
           </div>
-          <Badge variant="critical">Sign Out</Badge>
+          <Badge variant="critical">{t.signOut}</Badge>
         </div>
       </div>
     </motion.div>

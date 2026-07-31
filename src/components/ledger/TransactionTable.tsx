@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LedgerTransaction } from '@/lib/api';
 import { Paperclip, MoreHorizontal, FileWarning, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Badge } from '../dashboard/Widgets';
+import { useTranslation } from '@/lib/i18n';
 
 export function TransactionRow({ 
   txn, 
@@ -14,6 +15,7 @@ export function TransactionRow({
   onSelect: (id: string) => void;
   onClick: (txn: LedgerTransaction) => void;
 }) {
+  const { t, lang } = useTranslation();
   const amountNum = parseFloat(txn.amount.replace(/[^0-9.-]+/g,""));
   const isPositive = amountNum > 0;
 
@@ -73,8 +75,10 @@ export function TransactionRow({
 
       <td className="py-4 px-4">
         <div className="flex items-center gap-2">
-           <Badge variant={txn.status === 'cleared' ? 'default' : 'warning'}>{txn.status}</Badge>
-           {txn.compliance.outOfPolicy && <Badge variant="critical">Policy</Badge>}
+           <Badge variant={txn.status === 'cleared' ? 'default' : 'warning'}>
+             {txn.status === 'cleared' ? t.cleared : t.pending}
+           </Badge>
+           {txn.compliance.outOfPolicy && <Badge variant="critical">{lang === 'RU' ? 'Политика' : 'Policy'}</Badge>}
         </div>
       </td>
 
@@ -108,7 +112,17 @@ export function TransactionTable({
   isLoading: boolean;
   onRowClick: (txn: LedgerTransaction) => void;
 }) {
+  const { t, lang } = useTranslation();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [actionState, setActionState] = useState<string | null>(null);
+
+  const handleBulkAction = (actionName: string) => {
+    setActionState(actionName);
+    setTimeout(() => {
+      setActionState(null);
+      setSelectedIds(new Set());
+    }, 1500);
+  };
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -141,12 +155,12 @@ export function TransactionTable({
                   className="w-4 h-4 rounded border-white/10 bg-black text-indigo-500 focus:ring-indigo-500/50 appearance-none checked:bg-indigo-500 checked:border-indigo-500 relative before:content-[''] before:absolute before:inset-0 checked:before:bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTQgMTQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExLjY2NjYgMy41TDUuMjQ5OTIgOS45MTY2N0wyLjMzMzI1IDciIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+')] before:bg-center before:bg-no-repeat transition-colors cursor-pointer"
                 />
               </th>
-              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Merchant</th>
-              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Date</th>
-              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">User</th>
-              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium text-right">Amount</th>
-              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Status</th>
-              <th className="py-4 pl-4 pr-6 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium text-right">Receipt</th>
+              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">{t.merchant}</th>
+              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">{t.date}</th>
+              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">User / {lang === 'RU' ? 'Сотрудник' : 'User'}</th>
+              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium text-right">{t.amount}</th>
+              <th className="py-4 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">{t.status}</th>
+              <th className="py-4 pl-4 pr-6 text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium text-right">Receipt / {lang === 'RU' ? 'Чек' : 'Receipt'}</th>
             </tr>
           </thead>
           <tbody>
@@ -167,7 +181,7 @@ export function TransactionTable({
                  <td colSpan={7} className="py-32 text-center text-zinc-500">
                    <div className="flex flex-col items-center gap-3">
                      <AlertCircle className="w-8 h-8 text-zinc-700" />
-                     <p className="text-[13px] tracking-wide">No transactions found.</p>
+                     <p className="text-[13px] tracking-wide">{lang === 'RU' ? 'Транзакции не найдены.' : 'No transactions found.'}</p>
                    </div>
                  </td>
                </tr>
@@ -192,12 +206,30 @@ export function TransactionTable({
       }`}>
          <div className="px-4 py-1.5 bg-white/10 rounded-xl">
            <span className="text-[13px] font-medium text-white">{selectedIds.size}</span>
-           <span className="text-[13px] text-zinc-400 ml-1">selected</span>
+           <span className="text-[13px] text-zinc-400 ml-1">{lang === 'RU' ? 'выбрано' : 'selected'}</span>
          </div>
          <div className="w-px h-6 bg-white/10 mx-1" />
-         <button className="px-4 py-2 hover:bg-white/10 rounded-xl text-[13px] font-medium text-white spring-transition">Categorize</button>
-         <button className="px-4 py-2 hover:bg-white/10 rounded-xl text-[13px] font-medium text-white spring-transition">Export</button>
-         <button className="px-4 py-2 hover:bg-amber-500/10 hover:text-amber-400 rounded-xl text-[13px] font-medium text-white spring-transition">Ping Owners</button>
+         <button 
+           disabled={actionState !== null}
+           onClick={() => handleBulkAction('categorize')}
+           className="px-4 py-2 hover:bg-white/10 rounded-xl text-[13px] font-medium text-white spring-transition active:scale-95 disabled:opacity-50"
+         >
+           {actionState === 'categorize' ? (lang === 'RU' ? 'Обработка...' : 'Categorizing...') : (lang === 'RU' ? 'Категоризовать' : 'Categorize')}
+         </button>
+         <button 
+           disabled={actionState !== null}
+           onClick={() => handleBulkAction('export')}
+           className="px-4 py-2 hover:bg-white/10 rounded-xl text-[13px] font-medium text-white spring-transition active:scale-95 disabled:opacity-50"
+         >
+           {actionState === 'export' ? (lang === 'RU' ? 'Экспорт...' : 'Exporting...') : (lang === 'RU' ? 'Экспорт' : 'Export')}
+         </button>
+         <button 
+           disabled={actionState !== null}
+           onClick={() => handleBulkAction('ping')}
+           className="px-4 py-2 hover:bg-amber-500/10 hover:text-amber-400 rounded-xl text-[13px] font-medium text-white spring-transition active:scale-95 disabled:opacity-50"
+         >
+           {actionState === 'ping' ? (lang === 'RU' ? 'Отправка...' : 'Sending...') : (lang === 'RU' ? 'Пинг' : 'Ping Owners')}
+         </button>
       </div>
     </div>
   );

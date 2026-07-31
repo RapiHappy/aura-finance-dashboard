@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { CorporateCard } from '@/lib/api';
 import { Snowflake } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 export function VirtualCard({ card, isSelected, onClick }: { card: CorporateCard, isSelected: boolean, onClick: () => void }) {
+  const { t, lang } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
@@ -49,7 +51,7 @@ export function VirtualCard({ card, isSelected, onClick }: { card: CorporateCard
         {card.status === 'Frozen' && (
           <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-[2px] z-20 flex flex-col items-center justify-center">
             <Snowflake className="w-8 h-8 text-blue-300 mb-2 opacity-80" />
-            <span className="text-[13px] font-medium text-blue-200 tracking-widest uppercase">Frozen</span>
+            <span className="text-[13px] font-medium text-blue-200 tracking-widest uppercase">{t.frozen}</span>
           </div>
         )}
 
@@ -69,7 +71,9 @@ export function VirtualCard({ card, isSelected, onClick }: { card: CorporateCard
             <div>
               <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center text-black font-bold text-xs mb-3">A</div>
               <h3 className="text-white font-medium text-[15px] tracking-tight">{card.name}</h3>
-              <p className="text-white/50 text-[11px] tracking-widest uppercase mt-1">{card.type} Card</p>
+              <p className="text-white/50 text-[11px] tracking-widest uppercase mt-1">
+                {card.type === 'Virtual' ? (lang === 'RU' ? 'Виртуальная' : 'Virtual Card') : (lang === 'RU' ? 'Физическая' : 'Physical Card')}
+              </p>
             </div>
             {/* NFC Icon / Chip */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="opacity-50">

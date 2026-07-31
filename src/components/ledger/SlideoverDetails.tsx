@@ -2,6 +2,7 @@ import React from 'react';
 import { LedgerTransaction } from '@/lib/api';
 import { X, UploadCloud, MapPin, Receipt, Clock } from 'lucide-react';
 import { Badge } from '../dashboard/Widgets';
+import { useTranslation } from '@/lib/i18n';
 
 export function SlideoverDetails({ 
   txn, 
@@ -10,6 +11,7 @@ export function SlideoverDetails({
   txn: LedgerTransaction | null; 
   onClose: () => void;
 }) {
+  const { lang } = useTranslation();
   return (
     <>
       {/* Backdrop overlay */}
@@ -27,7 +29,7 @@ export function SlideoverDetails({
         {txn && (
           <>
             <div className="flex items-center justify-between p-6 border-b border-white/[0.03]">
-              <h2 className="text-[13px] font-medium text-white tracking-tight">Transaction Details</h2>
+              <h2 className="text-[13px] font-medium text-white tracking-tight">{lang === 'RU' ? 'Детали Транзакции' : 'Transaction Details'}</h2>
               <button 
                 onClick={onClose}
                 className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 spring-transition"
@@ -56,7 +58,7 @@ export function SlideoverDetails({
               {/* Receipt Upload Zone */}
               <div className="flex flex-col gap-3">
                 <h4 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-                  <Receipt size={12} /> Receipt & Invoice
+                  <Receipt size={12} /> {lang === 'RU' ? 'Чек и Инвойс' : 'Receipt & Invoice'}
                 </h4>
                 {txn.compliance.hasReceipt ? (
                    <div className="p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center justify-between group cursor-pointer hover:border-white/10 spring-transition">
@@ -66,7 +68,7 @@ export function SlideoverDetails({
                        </div>
                        <div>
                          <p className="text-[13px] font-medium text-white tracking-tight">Invoice_{txn.merchant.name.replace(/\s+/g,'')}.pdf</p>
-                         <p className="text-[11px] text-zinc-500 mt-0.5 tracking-wide">124 KB • Uploaded by {txn.user.name}</p>
+                         <p className="text-[11px] text-zinc-500 mt-0.5 tracking-wide">124 KB • {lang === 'RU' ? 'Загружено ' : 'Uploaded by '}{txn.user.name}</p>
                        </div>
                      </div>
                    </div>
@@ -76,8 +78,8 @@ export function SlideoverDetails({
                        <UploadCloud size={16} />
                      </div>
                      <div>
-                       <p className="text-[13px] font-medium text-amber-500 tracking-tight mb-1">Missing Receipt</p>
-                       <p className="text-[11px] text-amber-500/70 tracking-wide max-w-[200px]">Drag and drop an invoice or receipt here to attach it.</p>
+                       <p className="text-[13px] font-medium text-amber-500 tracking-tight mb-1">{lang === 'RU' ? 'Отсутствует чек' : 'Missing Receipt'}</p>
+                       <p className="text-[11px] text-amber-500/70 tracking-wide max-w-[200px]">{lang === 'RU' ? 'Перетащите сюда инвойс или чек, чтобы прикрепить его.' : 'Drag and drop an invoice or receipt here to attach it.'}</p>
                      </div>
                    </div>
                 )}
@@ -86,7 +88,7 @@ export function SlideoverDetails({
               {/* Audit Trail */}
               <div className="flex flex-col gap-3">
                 <h4 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 flex items-center gap-2">
-                  <Clock size={12} /> Audit Trail
+                  <Clock size={12} /> {lang === 'RU' ? 'История Аудита' : 'Audit Trail'}
                 </h4>
                 <div className="p-5 border border-white/5 rounded-2xl bg-white/[0.02] flex flex-col gap-4 relative">
                   <div className="absolute left-[29px] top-8 bottom-8 w-px bg-white/5" />
@@ -96,7 +98,7 @@ export function SlideoverDetails({
                       <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                     </div>
                     <div>
-                      <p className="text-[13px] text-white tracking-tight">Transaction Cleared</p>
+                      <p className="text-[13px] text-white tracking-tight">{lang === 'RU' ? 'Транзакция Подтверждена' : 'Transaction Cleared'}</p>
                       <p className="text-[11px] text-zinc-500 tracking-wide mt-0.5">{txn.date}</p>
                     </div>
                   </div>
@@ -106,8 +108,8 @@ export function SlideoverDetails({
                       <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full" />
                     </div>
                     <div>
-                      <p className="text-[13px] text-white tracking-tight">Payment Initiated</p>
-                      <p className="text-[11px] text-zinc-500 tracking-wide mt-0.5">Oct 12, 14:29</p>
+                      <p className="text-[13px] text-white tracking-tight">{lang === 'RU' ? 'Платеж Инициирован' : 'Payment Initiated'}</p>
+                      <p className="text-[11px] text-zinc-500 tracking-wide mt-0.5">{lang === 'RU' ? '12 Окт, 14:29' : 'Oct 12, 14:29'}</p>
                     </div>
                   </div>
 

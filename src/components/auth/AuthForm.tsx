@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { useTranslation } from '@/lib/i18n';
 
 interface AuthFormProps {
   initialMode?: 'login' | 'register';
@@ -20,6 +21,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login, register } = useAuth();
+  const { t, lang } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +66,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
           className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/10 text-xs font-medium text-zinc-400 hover:text-white transition-all active:scale-95"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Back to Landing</span>
+          <span>{lang === 'RU' ? 'На главную' : 'Back to Landing'}</span>
         </Link>
 
         <div className="flex items-center gap-2">
@@ -101,7 +103,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                 />
               )}
-              <span className="relative z-10">Sign In</span>
+              <span className="relative z-10">{t.signIn}</span>
             </button>
             <button
               onClick={() => { setMode('register'); setError(''); }}
@@ -116,18 +118,18 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                 />
               )}
-              <span className="relative z-10">Create Account</span>
+              <span className="relative z-10">{t.register}</span>
             </button>
           </div>
 
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold tracking-tight text-white mb-2">
-              {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+              {mode === 'login' ? (lang === 'RU' ? 'С возвращением' : 'Welcome Back') : (lang === 'RU' ? 'Создать Аккаунт' : 'Create Account')}
             </h1>
             <p className="text-sm text-[#A1A1AA]">
               {mode === 'login' 
-                ? 'Enter your credentials to access your dashboard' 
-                : 'Get started with your account in seconds.'}
+                ? (lang === 'RU' ? 'Введите ваши данные для доступа к дашборду' : 'Enter your credentials to access your dashboard')
+                : (lang === 'RU' ? 'Начните работу с вашим аккаунтом за секунды.' : 'Get started with your account in seconds.')}
             </p>
           </div>
 
@@ -144,7 +146,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
                 <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 10.8 0 12.35s.7 2.65 1.9 5.05l3.7-2.6z"/>
                 <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.1-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
               </svg>
-              <span>Continue with Google</span>
+              <span>{lang === 'RU' ? 'Продолжить с Google' : 'Continue with Google'}</span>
             </button>
           </div>
 
@@ -177,7 +179,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
                 exit={{ opacity: 0, height: 0 }}
                 className="flex flex-col gap-1.5"
               >
-                <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">Full Name</label>
+                <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">{lang === 'RU' ? 'Полное Имя' : 'Full Name'}</label>
                 <div className="relative">
                   <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
                   <input
@@ -192,7 +194,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
             )}
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">Email Address</label>
+              <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">{lang === 'RU' ? 'Email Адрес' : 'Email Address'}</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
                 <input
@@ -207,9 +209,9 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
 
             <div className="flex flex-col gap-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">Password</label>
+                <label className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">{lang === 'RU' ? 'Пароль' : 'Password'}</label>
                 {mode === 'login' && (
-                  <a href="#" onClick={(e) => { e.preventDefault(); alert('Reset link sent to email!'); }} className="text-[11px] text-[#00E5FF] hover:underline">Forgot?</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); alert(lang === 'RU' ? 'Ссылка отправлена на почту!' : 'Reset link sent to email!'); }} className="text-[11px] text-[#00E5FF] hover:underline">{lang === 'RU' ? 'Забыли?' : 'Forgot?'}</a>
                 )}
               </div>
               <div className="relative">
@@ -233,7 +235,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>{mode === 'login' ? t.signIn : t.register}</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -250,7 +252,7 @@ export function AuthForm({ initialMode = 'login' }: AuthFormProps) {
               className="text-xs text-[#A1A1AA] hover:text-white transition-colors inline-flex items-center gap-1.5"
             >
               <Sparkles size={14} className="text-[#8A2BE2]" />
-              <span>One-click Demo Login</span>
+              <span>{lang === 'RU' ? 'Вход в демо-режим' : 'One-click Demo Login'}</span>
             </button>
           </div>
         </motion.div>

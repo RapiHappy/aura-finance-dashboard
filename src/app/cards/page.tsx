@@ -16,7 +16,8 @@ export default function CardsPage() {
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [cardType, setCardType] = useState('virtual');
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
-  const { t } = useTranslation();
+  const [isIssuing, setIsIssuing] = useState(false);
+  const { t, lang } = useTranslation();
 
   useEffect(() => {
     api.getCorporateCards().then((data) => {
@@ -114,17 +115,17 @@ export default function CardsPage() {
         {showIssueModal && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl flex flex-col gap-6">
-              <h2 className="text-xl font-medium tracking-tight">Issue New Card</h2>
+              <h2 className="text-xl font-medium tracking-tight">{t.issueNewCard}</h2>
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 relative">
-                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Card Type</label>
+                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">{t.cardType}</label>
                   
                   {/* Custom Dropdown */}
                   <div 
                     onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
                     className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm cursor-pointer flex justify-between items-center hover:bg-white/10 transition-colors"
                   >
-                    <span>{cardType === 'virtual' ? 'Virtual Card' : 'Physical Card'}</span>
+                    <span>{cardType === 'virtual' ? (lang === 'RU' ? 'Виртуальная Карта' : 'Virtual Card') : (lang === 'RU' ? 'Физическая Карта' : 'Physical Card')}</span>
                     <ChevronDown size={16} className={`text-zinc-400 transition-transform duration-300 ${isTypeDropdownOpen ? 'rotate-180' : ''}`} />
                   </div>
 
@@ -141,20 +142,20 @@ export default function CardsPage() {
                           onClick={() => { setCardType('virtual'); setIsTypeDropdownOpen(false); }}
                           className={`px-4 py-3 text-sm cursor-pointer hover:bg-white/5 transition-colors ${cardType === 'virtual' ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-white'}`}
                         >
-                          Virtual Card
+                          {lang === 'RU' ? 'Виртуальная Карта' : 'Virtual Card'}
                         </div>
                         <div 
                           onClick={() => { setCardType('physical'); setIsTypeDropdownOpen(false); }}
                           className={`px-4 py-3 text-sm cursor-pointer hover:bg-white/5 transition-colors ${cardType === 'physical' ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-white'}`}
                         >
-                          Physical Card
+                          {lang === 'RU' ? 'Физическая Карта' : 'Physical Card'}
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">Monthly Limit</label>
+                  <label className="text-[11px] text-zinc-500 font-mono uppercase tracking-widest">{t.monthlyLimit}</label>
                   <input type="number" placeholder="5000" className="bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none text-sm" />
                 </div>
               </div>
@@ -163,16 +164,26 @@ export default function CardsPage() {
                   onClick={() => setShowIssueModal(false)}
                   className="px-5 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
                 <button 
+                  disabled={isIssuing}
                   onClick={() => {
-                    alert('Card Issued Successfully!');
-                    setShowIssueModal(false);
+                    setIsIssuing(true);
+                    setTimeout(() => {
+                      setIsIssuing(false);
+                      setShowIssueModal(false);
+                      alert(lang === 'RU' ? 'Карта успешно выпущена!' : 'Card Issued Successfully!');
+                    }, 1500);
                   }}
-                  className="px-5 py-2.5 bg-indigo-500 rounded-xl text-[13px] font-medium hover:bg-indigo-400 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+                  className={`px-5 py-2.5 bg-indigo-500 rounded-xl text-[13px] font-medium hover:bg-indigo-400 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.3)] flex items-center justify-center min-w-[120px] ${isIssuing ? 'opacity-80 pointer-events-none' : 'active:scale-95 spring-transition'}`}
                 >
-                  Confirm Issue
+                  {isIssuing ? (
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      {t.lang === 'RU' || t.confirmIssue === 'Подтвердить Выпуск' ? 'Выпуск...' : 'Issuing...'}
+                    </div>
+                  ) : t.confirmIssue}
                 </button>
               </div>
             </div>
