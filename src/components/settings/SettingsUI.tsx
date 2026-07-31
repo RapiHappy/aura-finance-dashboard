@@ -108,7 +108,7 @@ export function SettingsUI() {
             {t.settings}
           </motion.h1>
           
-          <nav className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0 hide-scrollbar">
+          <nav className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0 no-scrollbar">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;

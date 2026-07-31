@@ -48,12 +48,34 @@
     @apply px-6 py-3 rounded-xl bg-transparent border border-white/10 text-white font-medium text-sm hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2;
   }
 
-  .no-scrollbar::-webkit-scrollbar {
+  .no-scrollbar::-webkit-scrollbar,
+  .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  .no-scrollbar {
+  .no-scrollbar,
+  .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Global Sleek Dark Scrollbar for all elements */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(5, 5, 5, 0.8);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) rgba(5, 5, 5, 0.8);
   }
 
   /* Custom Grid Background for depth */
